@@ -27,7 +27,7 @@ public class FileController {
         try {
             fileSave = fileService.save(fileDto);
             return new ResponseEntity<>(MensajeResponse.builder()
-                    .mnesaje("File Guardado correctamente")
+                    .mensaje("File Guardado correctamente")
                     .object(fileDto.builder()
                             .id_files(fileSave.getId_files())
                             .file_name(fileSave.getFile_name())
@@ -39,7 +39,7 @@ public class FileController {
         } catch (DataAccessException exDt) {
             return new ResponseEntity<>(
                     MensajeResponse.builder()
-                            .mnesaje(exDt.getMessage())
+                            .mensaje(exDt.getMessage())
                             .object(null)
                             .build()
                     , HttpStatus.METHOD_NOT_ALLOWED);
