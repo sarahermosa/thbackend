@@ -4,6 +4,8 @@ package com.roshka.thbackend.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,4 +33,6 @@ public class Postulante {
     private String fecha_contratado;
     private String nivel_ingles;
 
+    @OneToMany(mappedBy = "postulante", cascade = CascadeType.ALL)
+    private List<File> files;
 }

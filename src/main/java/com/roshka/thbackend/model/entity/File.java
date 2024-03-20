@@ -27,9 +27,5 @@ public class File implements Serializable {
     @Column(name="file_type")
     private String file_type;
 
-//    @ManyToOne
-//    @JoinColumn(name = "id_postulante")
-//    private Postulante postulante;
-
 
 }
