@@ -4,6 +4,7 @@ package com.roshka.thbackend.service;
 import com.roshka.thbackend.model.dto.FileDto;
 import com.roshka.thbackend.model.entity.File;
 
+import java.lang.management.LockInfo;
 import java.util.List;
 
 public interface IFileService {
@@ -17,4 +18,6 @@ public interface IFileService {
     void delete(File file);
 
     boolean existsById(Long id);
+
+
 }

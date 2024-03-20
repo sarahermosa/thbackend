@@ -27,7 +27,6 @@ public class Convocatoria implements Serializable {
     private String title;
     @Column(name = "descripcion")
     @NotEmpty
-    @NotBlank(message = "Este campo no puede estar vacio")
     private String description;
     @Column(name = "fecha_inicio")
     private Date fecha_inicio;
