@@ -23,15 +23,15 @@ public class UsuarioImplService implements UsuarioService {
 
     @Transactional
     @Override
-    public Usuario save(UsuarioDto clienteDto) {
+    public Usuario save(UsuarioDto usuarioDto) {
         Usuario usuario = Usuario.builder()
-                .idUsuario(clienteDto.getIdUsuario())
-                .email(clienteDto.getEmail())
-                .nombre(clienteDto.getNombre())
-                .apellido(clienteDto.getApellido())
-                .password(clienteDto.getPassword())
-                .resetPassword(clienteDto.isResetPassword())
-                .rol(clienteDto.getRol())
+                .idUsuario(usuarioDto.getIdUsuario())
+                .email(usuarioDto.getEmail())
+                .nombre(usuarioDto.getNombre())
+                .apellido(usuarioDto.getApellido())
+                .password(usuarioDto.getPassword())
+                .resetPassword(usuarioDto.isResetPassword())
+                .roles(usuarioDto.getRoles())
                 .build();
         return usuarioDao.save(usuario);
     }

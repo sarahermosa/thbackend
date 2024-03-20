@@ -4,6 +4,7 @@ import com.roshka.thbackend.model.entity.Rol;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.Set;
 
 @Data
 @ToString
@@ -16,7 +17,6 @@ public class UsuarioDto implements Serializable {
     private String apellido;
     private String password;
     private boolean resetPassword;
-    private Rol rol;
-
+    private Set<Rol> roles;
 
 }
