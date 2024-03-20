@@ -16,5 +16,5 @@ public interface IFileService {
 
     void delete(File file);
 
-    boolean existsById(File file);
+    boolean existsById(Long id);
 }
