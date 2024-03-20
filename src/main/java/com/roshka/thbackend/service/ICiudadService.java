@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ICiudadService {
 
-    Ciudad guardar_ciudad(Ciudad ciudad);
+    Ciudad guardar_ciudad(CiudadDto ciudad);
 
     List<Ciudad> listAll();
 
