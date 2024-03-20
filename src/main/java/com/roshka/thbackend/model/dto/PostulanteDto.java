@@ -1,24 +1,18 @@
-package com.roshka.thbackend.model.entity;
+package com.roshka.thbackend.model.dto;
 
-
-import jakarta.persistence.*;
+import com.roshka.thbackend.model.entity.File;
+import jakarta.persistence.Table;
 import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @ToString
 @Builder
-@Entity
-@Table(name = "Postulante")
-public class Postulante {
+@Table(name = "postulantes")
+public class PostulanteDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
     private Long id_postulante;
     private String nombre;
     private String apellido;
@@ -33,8 +27,7 @@ public class Postulante {
     private String fecha_creacion;
     private String fecha_contratado;
     private String nivel_ingles;
-
-    @OneToMany(cascade = CascadeType.ALL)
     private List<File> files = new ArrayList<>();
+
 
 }

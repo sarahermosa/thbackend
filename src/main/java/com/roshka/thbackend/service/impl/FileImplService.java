@@ -30,7 +30,7 @@ public class FileImplService implements IFileService {
               .id_files(fileDto.getId_files())
               .file_name(fileDto.getFile_name())
               .file_type(fileDto.getFile_type())
-              .data(fileDto.getData())
+//              .data(fileDto.getData())
               .build();
       return fileDao.save(file);
     }
@@ -49,4 +49,9 @@ public class FileImplService implements IFileService {
     public boolean existsById(Long id) {
         return fileDao.existsById(id);
     }
+
+
+
+
+
 }
