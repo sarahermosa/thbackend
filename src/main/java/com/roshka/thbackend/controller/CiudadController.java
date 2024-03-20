@@ -3,6 +3,7 @@ package com.roshka.thbackend.controller;
 import com.roshka.thbackend.model.dto.CiudadDto;
 import com.roshka.thbackend.model.entity.Ciudad;
 import com.roshka.thbackend.service.ICiudadService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,11 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/thbackend/v1")
+@RequestMapping("/api/v1")
 public class CiudadController {
 
     @Autowired
     private ICiudadService ciudadService;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @GetMapping("/ciudades")
     public ResponseEntity<?> listarCiudades() {
@@ -26,16 +30,17 @@ public class CiudadController {
 
     @PostMapping("/ciudad/agregar")
     @ResponseStatus(HttpStatus.CREATED)
-    public List<Ciudad> create(@RequestBody List<Ciudad> ciudadList){
+    public List<CiudadDto> create(@RequestBody List<CiudadDto> ciudadDtoList){
 
-        List<Ciudad> ciudadLista = new ArrayList<>();
+        List<CiudadDto> ciudadDtoResponseList = new ArrayList<>();
 
-        for (Ciudad ciudad : ciudadList) {
-            Ciudad ciudadSave = ciudadService.guardar_ciudad(ciudad);
-            ciudadLista.add(ciudadSave);
+        for (CiudadDto ciudadDto : ciudadDtoList) {
+            System.out.println(ciudadDto);
+            ciudadService.guardar_ciudad(ciudadDto);
+            ciudadDtoResponseList.add(ciudadDto);
         }
 
-        return ciudadLista;
+        return ciudadDtoResponseList;
     }
 
 

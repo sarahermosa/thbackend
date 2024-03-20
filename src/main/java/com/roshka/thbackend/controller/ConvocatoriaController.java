@@ -1,9 +1,12 @@
 package com.roshka.thbackend.controller;
 
 
+import com.roshka.thbackend.model.dto.ConvocatoriaDto;
 import com.roshka.thbackend.model.dto.FileDto;
+import com.roshka.thbackend.model.entity.Convocatoria;
 import com.roshka.thbackend.model.entity.File;
 import com.roshka.thbackend.model.payload.MensajeResponse;
+import com.roshka.thbackend.service.IConvocatoriaService;
 import com.roshka.thbackend.service.IFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -16,23 +19,26 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/thbackend/v1")
-public class FileController {
+public class ConvocatoriaController {
+
     @Autowired
-    private IFileService fileService;
+    private IConvocatoriaService convocatoriaService;
 
-
-    @PostMapping("file")
-    public ResponseEntity<?> create(@RequestBody FileDto fileDto) {
-        File fileSave = null;
+    @PostMapping("convocatoria")
+    public ResponseEntity<?> create(@RequestBody ConvocatoriaDto convocatoriaDto) {
+        Convocatoria convocatoriaSave = null;
         try {
-            fileSave = fileService.save(fileDto);
+            convocatoriaSave = convocatoriaService.save(convocatoriaDto);
             return new ResponseEntity<>(MensajeResponse.builder()
                     .mensaje("File Guardado correctamente")
-                    .object(fileDto.builder()
-                            .id_files(fileSave.getId_files())
-                            .file_name(fileSave.getFile_name())
-                            .file_type(fileSave.getFile_type())
-//                            .data(fileSave.getData())
+                    .object(convocatoriaDto.builder()
+                            .id_convocatoria(convocatoriaSave.getId_convocatoria())
+                            .title(convocatoriaSave.getTitle())
+                            .description(convocatoriaSave.getDescription())
+                            .fecha_fin(convocatoriaSave.getFecha_fin())
+                            .fecha_inicio(convocatoriaSave.getFecha_inicio())
+                            .link(convocatoriaSave.getLink())
+                            .imagenes(convocatoriaSave.getImagenes())
                             .build())
                     .build()
                     , HttpStatus.CREATED);
@@ -45,5 +51,4 @@ public class FileController {
                     , HttpStatus.METHOD_NOT_ALLOWED);
         }
     }
-
 }
