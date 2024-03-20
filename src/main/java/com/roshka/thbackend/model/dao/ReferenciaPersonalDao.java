@@ -1,7 +1,9 @@
 package com.roshka.thbackend.model.dao;
 
 import com.roshka.thbackend.model.entity.ReferenciaPersonal;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface ReferenciaPersonalDao extends CrudRepository <ReferenciaPersonal, Long> {
+@Repository
+public interface ReferenciaPersonalDao extends JpaRepository<ReferenciaPersonal, Long> {
 }
