@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/thbackend/v1")
 public class CiudadController {
 
     @Autowired
@@ -26,20 +26,14 @@ public class CiudadController {
 
     @PostMapping("/ciudad/agregar")
     @ResponseStatus(HttpStatus.CREATED)
-    public List<CiudadDto> create(@RequestBody List<CiudadDto> ciudadDtoList){
+    public List<Ciudad> create(@RequestBody List<Ciudad> ciudadtoList){
 
-        List<CiudadDto> ciudadDtoResponseList = new ArrayList<>();
+        List<Ciudad> ciudadList = new ArrayList<>();
 
-        for (CiudadDto ciudadDto : ciudadDtoList) {
-            Ciudad ciudadSave = ciudadService.guardar_ciudad(ciudadDto);
-            CiudadDto ciudadDtoResponse = CiudadDto.builder()
-                    .id(ciudadSave.getId())
-                    .nombre(ciudadSave.getNombre())
-                    .build();
-            ciudadDtoResponseList.add(ciudadDtoResponse);
+        for (Ciudad ciudad: ciudadList) {
+            ciudadList.add(ciudad);
         }
-
-        return ciudadDtoResponseList;
+        return ciudadList;
     }
 
 

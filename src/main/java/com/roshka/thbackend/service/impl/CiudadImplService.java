@@ -16,12 +16,9 @@ public class CiudadImplService implements ICiudadService {
     @Autowired
     private CiudadDao ciudadDao;
 
-
     @Transactional
     @Override
-    public Ciudad guardar_ciudad(CiudadDto ciudadDto) {
-        Ciudad ciudad = Ciudad.builder().id(ciudadDto.getId())
-                .nombre(ciudadDto.getNombre()).build();
+    public Ciudad guardar_ciudad(Ciudad ciudad) {
         return ciudadDao.save(ciudad);
     }
 

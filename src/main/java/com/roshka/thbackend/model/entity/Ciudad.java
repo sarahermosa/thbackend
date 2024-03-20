@@ -19,4 +19,6 @@ public class Ciudad implements Serializable {
 
     @Column(name = "nombre")
     public String nombre;
+
+    //ACA DEBE DE IR LA RELACION CON POSTULANTE
 }
