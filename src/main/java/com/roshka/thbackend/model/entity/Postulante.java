@@ -37,4 +37,9 @@ public class Postulante {
     @OneToMany(cascade = CascadeType.ALL)
     private List<File> files = new ArrayList<>();
 
+    @ManyToMany
+    private List<Tecnologia> tecnologias = new ArrayList<>();
+
+
+
 }

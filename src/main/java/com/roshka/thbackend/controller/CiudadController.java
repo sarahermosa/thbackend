@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/thbackend/v1")
 public class CiudadController {
 
     @Autowired
@@ -35,7 +35,6 @@ public class CiudadController {
         List<CiudadDto> ciudadDtoResponseList = new ArrayList<>();
 
         for (CiudadDto ciudadDto : ciudadDtoList) {
-            System.out.println(ciudadDto);
             ciudadService.guardar_ciudad(ciudadDto);
             ciudadDtoResponseList.add(ciudadDto);
         }

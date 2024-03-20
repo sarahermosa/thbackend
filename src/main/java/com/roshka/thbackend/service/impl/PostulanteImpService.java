@@ -21,7 +21,7 @@ public class PostulanteImpService implements IPostulanteService {
 
     @Override
     public List<Postulante> listAll() {
-        return null;
+        return  (List) postulanteDao.findAll();
     }
 
     @Override

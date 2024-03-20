@@ -38,4 +38,6 @@ public class Usuario implements Serializable {
     @ManyToOne
     @JoinColumn(name = "rol_id")
     private Rol rol;
+
+    
 }
