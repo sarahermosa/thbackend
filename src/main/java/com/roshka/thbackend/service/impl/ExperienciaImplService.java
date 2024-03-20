@@ -38,19 +38,4 @@ public class ExperienciaImplService implements IExperiencia {
                 .build();
         return experienciaDao.save(experiencia);
     }
-
-    @Override
-    public Experiencia findById(Long id) {
-        return  experienciaDao.findById(id).orElse(null);
-    }
-
-    @Override
-    public void delete(Experiencia experiencia) {
-        experienciaDao.delete(experiencia);
-    }
-
-    @Override
-    public boolean existsById(Long id) {
-        return experienciaDao.existsById(id);
-    }
 }

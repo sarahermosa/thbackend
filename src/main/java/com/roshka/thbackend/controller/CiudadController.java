@@ -26,14 +26,16 @@ public class CiudadController {
 
     @PostMapping("/ciudad/agregar")
     @ResponseStatus(HttpStatus.CREATED)
-    public List<Ciudad> create(@RequestBody List<Ciudad> ciudadtoList){
+    public List<Ciudad> create(@RequestBody List<Ciudad> ciudadList){
 
-        List<Ciudad> ciudadList = new ArrayList<>();
+        List<Ciudad> ciudadLista = new ArrayList<>();
 
-        for (Ciudad ciudad: ciudadList) {
-            ciudadList.add(ciudad);
+        for (Ciudad ciudad : ciudadList) {
+            Ciudad ciudadSave = ciudadService.guardar_ciudad(ciudad);
+            ciudadLista.add(ciudadSave);
         }
-        return ciudadList;
+
+        return ciudadLista;
     }
 
 
