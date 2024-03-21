@@ -3,11 +3,14 @@ package com.roshka.thbackend.model.dto;
 import com.roshka.thbackend.model.entity.Ciudad;
 import com.roshka.thbackend.model.entity.Experiencia;
 import com.roshka.thbackend.model.entity.File;
+import com.roshka.thbackend.model.entity.Tecnologia;
 import jakarta.persistence.Table;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @ToString
@@ -31,6 +34,8 @@ public class PostulanteDto {
     private String nivel_ingles;
     private List<File> files = new ArrayList<>();
     private List<Experiencia> experiencias = new ArrayList<>();
+    private Set<Tecnologia> tecnologias_asignadas = new HashSet<>();
+    private List<Long> tecnologiasList;
 
 
 }

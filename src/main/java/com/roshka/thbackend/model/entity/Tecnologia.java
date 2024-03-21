@@ -1,7 +1,11 @@
 package com.roshka.thbackend.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -15,4 +19,8 @@ public class Tecnologia {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_tecnologia;
     private String nombre;
+
+//    @JsonIgnore
+//    @ManyToMany(mappedBy = "tecnologias_asignadas")
+//    private Set<Postulante> postulanteSet = new HashSet<>();
 }

@@ -12,4 +12,7 @@ public interface IPostulanteService {
 
     public void deletePostulante(Long id);
 
+    public Postulante assignTecnologiaToEmployee(Long postulateId, Long tecnlogiaId);
+
+
 }
