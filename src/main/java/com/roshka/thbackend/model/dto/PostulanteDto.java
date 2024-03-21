@@ -1,5 +1,8 @@
 package com.roshka.thbackend.model.dto;
 
+import com.roshka.thbackend.model.Estudio;
+import com.roshka.thbackend.model.entity.Ciudad;
+import com.roshka.thbackend.model.entity.Experiencia;
 import com.roshka.thbackend.model.entity.File;
 import jakarta.persistence.Table;
 import lombok.*;
@@ -27,5 +30,12 @@ public class PostulanteDto {
     private String fecha_creacion;
     private String fecha_contratado;
     private String nivel_ingles;
+
     private List<File> files = new ArrayList<>();
+
+    private Ciudad ciudad;
+
+    private List<Experiencia> experiencias = new ArrayList<>();
+
+    private List<Estudio> estudios = new ArrayList<>();
 }

@@ -15,7 +15,7 @@ import java.io.Serializable;
 public class Ciudad implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+    public Long id_ciudad;
 
     @Column(name = "nombre")
     public String nombre;

@@ -44,9 +44,4 @@ public class Experiencia {
     @Column(name = "tipo_experiencia")
     private String tipo_experiencia;
     //VALORES POSIBLES : TRABAJO NORMAL - PASANTIA
-
-    /*
-    @Column(name = "postulante_id")
-    private int postulante_id; //DEBE DE TENER LA RELACION CON POSTULANTE
-    */
 }

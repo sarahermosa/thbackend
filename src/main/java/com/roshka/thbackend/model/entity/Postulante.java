@@ -1,6 +1,8 @@
 package com.roshka.thbackend.model.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.roshka.thbackend.model.Estudio;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,5 +38,15 @@ public class Postulante {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<File> files = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "id_ciudad")
+    private Ciudad ciudad;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Experiencia> experiencias = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Estudio> estudios = new ArrayList<>();
 
 }

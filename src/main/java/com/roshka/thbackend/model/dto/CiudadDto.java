@@ -11,6 +11,6 @@ import java.io.Serializable;
 @Builder
 public class CiudadDto {
 
-    private Long id;
+    private Long id_ciudad;
     private String nombre;
 }

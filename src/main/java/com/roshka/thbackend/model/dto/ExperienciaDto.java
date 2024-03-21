@@ -26,8 +26,4 @@ public class ExperienciaDto implements Serializable {
     private String nombre_referencia;
     private String telefono_referencia;
     private String tipo_experiencia;
-    //VALORES POSIBLES : TRABAJO NORMAL - PASANTIA
-
-
-    private int postulante_id; //DEBE DE TENER LA RELACION CON POSTULANTE
 }
