@@ -2,6 +2,7 @@ package com.roshka.thbackend.controller;
 
 import com.roshka.thbackend.model.dto.CiudadDto;
 import com.roshka.thbackend.model.entity.Ciudad;
+import com.roshka.thbackend.model.entity.Estado;
 import com.roshka.thbackend.service.ICiudadService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,6 @@ public class CiudadController {
 
         return ciudadDtoResponseList;
     }
-
 
 }
 

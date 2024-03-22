@@ -1,9 +1,8 @@
 package com.roshka.thbackend.model.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.roshka.thbackend.model.Estudio;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -22,19 +21,45 @@ public class Postulante {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private Long id_postulante;
+    @NotBlank
     private String nombre;
+
+    @NotBlank
     private String apellido;
+
+    @NotBlank
     private String comentario_rrhh;
+
+    @NotBlank
     private String correo;
+
+    @NotBlank
     private String direccion;
+
+    @NotBlank
     private String nro_telefono;
+
+    @NotBlank
     private String nacionalidad;
+
+    @NotBlank
     private String estado_civil;
+
+    @NotBlank
     private String fecha_nacimiento;
+
+    @NotBlank
     private String fecha_actualizacion;
+
+    @NotBlank
     private String fecha_creacion;
+
     private String fecha_contratado;
+
+    @NotBlank
     private String nivel_ingles;
+
+    private String nombre_ciudad;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<File> files = new ArrayList<>();
@@ -48,5 +73,9 @@ public class Postulante {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Estudio> estudios = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "id_estado")
+    private Estado estado;
 
 }

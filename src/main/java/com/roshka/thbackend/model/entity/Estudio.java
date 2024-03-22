@@ -1,6 +1,7 @@
-package com.roshka.thbackend.model;
+package com.roshka.thbackend.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.Date;
@@ -19,6 +20,7 @@ public class Estudio {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_estudios;
 
+    @NotBlank
     @Column(name = "estado")
     private String estado;
 
@@ -28,12 +30,15 @@ public class Estudio {
     @Column(name = "fecha_fin")
     private Date fecha_fin;
 
+    @NotBlank
     @Column(name = "descripcion")
     private String descripcion;
 
+    @NotBlank
     @Column(name = "tipo_estudios")
     private String tipo_estudio;
 
+    @NotBlank
     @Column(name = "institucion")
     private String institucion;
 
