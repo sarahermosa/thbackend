@@ -20,7 +20,7 @@ public class ReferenciaPersonalServiceImpl implements ReferenciaPersonalService 
     @Override
     public ReferenciaPersonal guardarReferenciaPersonal(ReferenciaPersonalDto referenciaPersonalDto) {
         ReferenciaPersonal referenciaPersonal = ReferenciaPersonal.builder()
-                .id(referenciaPersonalDto.getId())
+                .id(referenciaPersonalDto.getId_referencia_personal())
                 .nombre(referenciaPersonalDto.getNombre())
                 .relacion(referenciaPersonalDto.getRelacion())
                 .telefono(referenciaPersonalDto.getTelefono())
