@@ -5,6 +5,7 @@ import com.roshka.thbackend.model.dto.ConvocatoriaDto;
 import com.roshka.thbackend.model.dto.ConvocatoriaOutputDto;
 import com.roshka.thbackend.model.entity.Convocatoria;
 import com.roshka.thbackend.service.IConvocatoriaService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,9 @@ public class ConvocatoriaImplService implements IConvocatoriaService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private HttpServletRequest request;
+
     @Override
     public List<ConvocatoriaOutputDto> listAll() throws DataFormatException, IOException {
         List<Convocatoria> convocatorias =  (List) convocatoriaDao.findAll();
@@ -46,11 +50,16 @@ public class ConvocatoriaImplService implements IConvocatoriaService {
             output.setFecha_fin(convocatoria.getFecha_fin());
             output.setLink(convocatoria.getLink());
 
-            Path directorio = Paths.get(convocatoria.getImageData());
-            String rutaAbsoluta = directorio.toFile().getAbsolutePath();
-            Path rutaCompleta=Paths.get(rutaAbsoluta);
-            output.setFile_path(rutaCompleta);
+
+            String imagePath = convocatoria.getImageData().toString(); // Extract just the file name
+            String baseUrl = request.getRequestURL().toString().replace(request.getRequestURI(), "");
+            String imageUrl = baseUrl + "/"+ imagePath; // Construct the URL
+            output.setFile_path(imageUrl); // Set the URL as a Path
+
+
             convocatoriasOut.add(output);
+
+
 
         }
         return convocatoriasOut;
@@ -68,6 +77,7 @@ public class ConvocatoriaImplService implements IConvocatoriaService {
             String fileExtension = convocatoriaDto.getFile().getOriginalFilename().substring(convocatoriaDto.getFile().getOriginalFilename().lastIndexOf('.'));
 
             Path directoriImagenes =  Paths.get("images/" + DigestUtils.md5DigestAsHex(fileInputStream)+fileExtension);
+
             String rutaAbsoluta = directoriImagenes.toFile().getAbsolutePath();
             try {
                 byte[] bytesImg=convocatoriaDto.getFile().getBytes();
@@ -103,44 +113,6 @@ public class ConvocatoriaImplService implements IConvocatoriaService {
 
     }
 
-//    @Transactional
-//    @Override
-//    public Convocatoria save(ConvocatoriaDto convocatoriaDto) throws IOException {
-//        Convocatoria convocatoria = new Convocatoria();
-//
-//        if (convocatoriaDto.getFile() != null && !convocatoriaDto.getFile().isEmpty()) {
-//            InputStream fileInputStream = convocatoriaDto.getFile().getInputStream();
-//
-//            // Generate MD5 hash of the file content
-//            String fileHash = DigestUtils.md5DigestAsHex(fileInputStream);
-//            fileInputStream.close(); // Close the stream before reuse or deletion
-//
-//            // Get file extension
-//            String originalFilename = convocatoriaDto.getFile().getOriginalFilename();
-//            String fileExtension = originalFilename.substring(originalFilename.lastIndexOf('.'));
-//
-//            // Construct file path
-//            Path directoryPath = Paths.get("images");
-//            Path filePath = directoryPath.resolve(fileHash + fileExtension);
-//            String imagePath = filePath.toString();
-//
-//            // Save file to disk
-//            Files.copy(convocatoriaDto.getFile().getInputStream(), filePath);
-//
-//            // Set Convocatoria attributes
-//            convocatoria.setTitle(convocatoriaDto.getTitle());
-//            convocatoria.setDescription(convocatoriaDto.getDescription());
-//            convocatoria.setFecha_inicio(convocatoriaDto.getFecha_inicio());
-//            convocatoria.setFecha_fin(convocatoriaDto.getFecha_fin());
-//            convocatoria.setLink(convocatoriaDto.getLink());
-//            convocatoria.setImageData(imagePath);
-//        } else {
-//            // Handle case when no file is provided
-//            // You might want to throw an exception or handle it differently based on your requirements
-//        }
-//
-//        return convocatoriaDao.save(convocatoria);
-//    }
 
     @Override
     public Convocatoria findById(Long id) {

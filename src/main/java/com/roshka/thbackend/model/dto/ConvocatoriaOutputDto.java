@@ -19,6 +19,6 @@ public class ConvocatoriaOutputDto {
     private Date fecha_inicio;
     private Date fecha_fin;
     private String link;
-    private Path file_path;
+    private String file_path;
 
 }
