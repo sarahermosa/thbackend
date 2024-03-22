@@ -1,11 +1,8 @@
 package com.roshka.thbackend.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -13,15 +10,15 @@ import java.util.Set;
 @ToString
 @Builder
 @Entity
+@Table(name = "tecnologia")
 public class Tecnologia {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column (name = "id_tecnologia")
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id_tecnologia;
-    private String nombre;
 
-//
-//    @ManyToMany(mappedBy = "tecnologiasasignadas")
-//    @JsonIgnore
-//    private Set<Postulante> postulanteSet = new HashSet<>();
+    @NotBlank (message = "El campo no puede estar vacio")
+    @Column (name = "nombre")
+    private String nombre;
 
 }

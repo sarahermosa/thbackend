@@ -1,7 +1,10 @@
 package com.roshka.thbackend.model.dao;
 
 import com.roshka.thbackend.model.entity.Tecnologia;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import org.springframework.data.repository.CrudRepository;
 
-public interface TecnologiaDao extends CrudRepository<Tecnologia, Long> {
+@Repository
+public interface TecnologiaDao extends JpaRepository<TecnologiaDao, Long> {
 }
