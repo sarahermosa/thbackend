@@ -29,7 +29,7 @@ public class PostulanteImpService implements IPostulanteService {
     private TecnologiaDao tecnologiaDao;
 
     @Override
-    public List<Postulante> listAll() {
+    public List<PostulanteDto> listAll() {
         return  (List) postulanteDao.findAll();
     }
 
@@ -38,12 +38,14 @@ public class PostulanteImpService implements IPostulanteService {
     public Postulante savePostulante(PostulanteDto PostulanteDto) {
         System.out.println(PostulanteDto);
         Postulante postulante = modelMapper.map(PostulanteDto, Postulante.class);
-        postulante.setTecnologias_asignadas(new HashSet<>());
-        postulanteDao.save(postulante);
+        postulante.setTecnologiasasignadas(new HashSet<>());
+        postulanteDao.save(postulante); //create a new postulante without tecnologias
+
         for(Long tecnologiaId : PostulanteDto.getTecnologiasList()){
             System.out.println(tecnologiaId);
             assignTecnologiaToEmployee(postulante.getId_postulante(), tecnologiaId);
         }
+        //after this postulante it is saved with tecnologias
         return postulante;
 
     }
@@ -65,13 +67,12 @@ public class PostulanteImpService implements IPostulanteService {
         System.out.println(tecnologia);
         Postulante postulante = postulanteDao.findById(postulateId).get();
 
-        Set<Tecnologia> tecnologiaSet = postulante.getTecnologias_asignadas();
+        Set<Tecnologia> tecnologiaSet = postulante.getTecnologiasasignadas();
         System.out.println(tecnologiaSet);
         tecnologiaSet.add(tecnologia);
         System.out.println("here");
         System.out.println(tecnologiaSet);
-        postulante.setTecnologias_asignadas(tecnologiaSet);
-
+        postulante.setTecnologiasasignadas(tecnologiaSet);
         return postulanteDao.save(postulante);
     }
 

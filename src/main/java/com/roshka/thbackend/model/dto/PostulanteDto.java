@@ -32,9 +32,9 @@ public class PostulanteDto {
     private String fecha_creacion;
     private String fecha_contratado;
     private String nivel_ingles;
-    private List<File> files = new ArrayList<>();
-    private List<Experiencia> experiencias = new ArrayList<>();
-    private Set<Tecnologia> tecnologias_asignadas = new HashSet<>();
+    private List<File> files;
+    private List<Experiencia> experiencias;
+    private Set<Tecnologia> tecnologiasasignadas;
     private List<Long> tecnologiasList;
 
 

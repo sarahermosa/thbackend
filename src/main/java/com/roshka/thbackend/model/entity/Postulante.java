@@ -15,7 +15,6 @@ import java.util.Set;
 @ToString
 @Builder
 @Entity
-@Table(name = "Postulante")
 public class Postulante {
 
     @Id
@@ -39,13 +38,14 @@ public class Postulante {
     @OneToMany(cascade = CascadeType.ALL)
     private List<File> files = new ArrayList<>();
 
-    @ManyToMany
-//    @JoinTable(name = "postulantes_tecnologias",
-//            joinColumns = @JoinColumn(name= "postulante_id"),
-//            inverseJoinColumns = @JoinColumn(name = "tecnologia_id"))
-    private Set<Tecnologia> tecnologias_asignadas = new HashSet<>();
 
 
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinTable(name = "postulantesitos_tecnologias",
+            joinColumns = @JoinColumn(name = "id_postulantes", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "id_tecnologias", referencedColumnName = "id_tecnologia"))
+    private Set<Tecnologia> tecnologiasasignadas = new HashSet<>();
 
 
 }

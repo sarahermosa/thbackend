@@ -29,7 +29,7 @@ public class PostulanteController {
     }
 
     @GetMapping("postulante")
-    public List<Postulante> listarPostulantes(){
+    public List<PostulanteDto> listarPostulantes(){
         return postulanteService.listAll();
     }
 }

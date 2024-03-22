@@ -13,6 +13,6 @@ import java.util.Set;
 public class TecnologiaDto {
     private Long id_tecnologia;
     private String nombre;
-    private Set<Postulante> postulanteSet = new HashSet<>();
+//    private Set<Postulante> postulanteSet = new HashSet<>();
 
 }

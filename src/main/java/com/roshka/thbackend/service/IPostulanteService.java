@@ -6,7 +6,7 @@ import com.roshka.thbackend.model.entity.Postulante;
 import java.util.List;
 
 public interface IPostulanteService {
-    public List<Postulante> listAll();
+    public List<PostulanteDto> listAll();
     public Postulante savePostulante(PostulanteDto postulanteDto);
     public Postulante updatePostulante(Postulante postulante);
 

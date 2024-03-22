@@ -13,14 +13,15 @@ import java.util.Set;
 @ToString
 @Builder
 @Entity
-@Table(name = "Tecnologias")
 public class Tecnologia {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_tecnologia;
     private String nombre;
 
+//
+//    @ManyToMany(mappedBy = "tecnologiasasignadas")
 //    @JsonIgnore
-//    @ManyToMany(mappedBy = "tecnologias_asignadas")
 //    private Set<Postulante> postulanteSet = new HashSet<>();
+
 }
