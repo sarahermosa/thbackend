@@ -46,7 +46,8 @@ public class PostulanteController {
         }
 
         if (estado.isPresent()){
-            postulante.setEstado(estado.get());
+            postulante.setEstado(estado.get()
+            );
         }
         try {
             postulanteService.savePostulante(postulante);
