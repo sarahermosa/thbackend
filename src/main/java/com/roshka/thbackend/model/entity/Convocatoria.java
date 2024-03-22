@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.Type;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -34,7 +35,10 @@ public class Convocatoria implements Serializable {
     private Date fecha_fin;
     @Column(name = "link")
     private String link;
-    @Column(name = "imagenes")
-    private String imagenes;
+
+    @Column(name = "imagedata")
+    private String imageData;
+
+
 
 }

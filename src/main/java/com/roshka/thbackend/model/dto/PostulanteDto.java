@@ -4,11 +4,14 @@ import com.roshka.thbackend.model.Estudio;
 import com.roshka.thbackend.model.entity.Ciudad;
 import com.roshka.thbackend.model.entity.Experiencia;
 import com.roshka.thbackend.model.entity.File;
+import com.roshka.thbackend.model.entity.Tecnologia;
 import jakarta.persistence.Table;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @ToString
@@ -30,12 +33,10 @@ public class PostulanteDto {
     private String fecha_creacion;
     private String fecha_contratado;
     private String nivel_ingles;
-
-    private List<File> files = new ArrayList<>();
-
+    private List<File> files;
+    private List<Experiencia> experiencias;
+    private Set<Tecnologia> tecnologiasasignadas;
+    private List<Long> tecnologiasList;
     private Ciudad ciudad;
-
-    private List<Experiencia> experiencias = new ArrayList<>();
-
     private List<Estudio> estudios = new ArrayList<>();
 }

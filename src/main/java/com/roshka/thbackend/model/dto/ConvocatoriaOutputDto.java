@@ -1,10 +1,9 @@
 package com.roshka.thbackend.model.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Path;
 import java.util.Date;
 
 @Data
@@ -12,7 +11,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ConvocatoriaDto {
+public class ConvocatoriaOutputDto {
 
     private Long id_convocatoria;
     private String title;
@@ -20,6 +19,6 @@ public class ConvocatoriaDto {
     private Date fecha_inicio;
     private Date fecha_fin;
     private String link;
-    private MultipartFile file;
+    private String file_path;
 
 }
