@@ -2,9 +2,9 @@ package com.roshka.thbackend.model.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
-
-import java.io.Serializable;
+import org.springframework.validation.annotation.Validated;
 
 @Data //CREA AUTOMATICAMENTE GETTERS-SETTERS,ETC
 @AllArgsConstructor //CREA CONSTRUCTORES CON ARGUMENTOS
@@ -12,15 +12,13 @@ import java.io.Serializable;
 @ToString //TO STRING
 @Builder
 @Entity
-@Table(name="ciudad")
-public class Ciudad implements Serializable {
+@Table(name="estado")
+public class Estado {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id_ciudad;
+    public Long id_estado;
 
-    @NotBlank
-    @Column(name = "nombre")
-    public String nombre;
-
-    //ACA DEBE DE IR LA RELACION CON POSTULANTE
+    @NotBlank(message = "El campo no puede estar vacío")
+    @Column(name = "estado")
+    public String estado;
 }

@@ -6,12 +6,11 @@ import com.roshka.thbackend.model.entity.Ciudad;
 import com.roshka.thbackend.service.ICiudadService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CiudadImplService implements ICiudadService {
@@ -33,6 +32,11 @@ public class CiudadImplService implements ICiudadService {
     @Override
     public List<Ciudad> listAll() {
         return (List) ciudadDao.findAll();
+    }
+
+    @Override
+    public Optional<Ciudad> findById(Long id) {
+        return ciudadDao.findById(id);
     }
 
     @Transactional

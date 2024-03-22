@@ -1,7 +1,8 @@
 package com.roshka.thbackend.model.dto;
 
-import com.roshka.thbackend.model.Estudio;
+import com.roshka.thbackend.model.entity.Estudio;
 import com.roshka.thbackend.model.entity.Ciudad;
+import com.roshka.thbackend.model.entity.Estado;
 import com.roshka.thbackend.model.entity.Experiencia;
 import com.roshka.thbackend.model.entity.File;
 import com.roshka.thbackend.model.entity.Tecnologia;
@@ -33,10 +34,15 @@ public class PostulanteDto {
     private String fecha_creacion;
     private String fecha_contratado;
     private String nivel_ingles;
-    private List<File> files;
-    private List<Experiencia> experiencias;
+
+    private List<File> files = new ArrayList<>();
+
+    private Long id_ciudad;
     private Set<Tecnologia> tecnologiasasignadas;
     private List<Long> tecnologiasList;
     private Ciudad ciudad;
     private List<Estudio> estudios = new ArrayList<>();
+
+    private Long id_estado;
+    private Estado estado;
 }

@@ -6,11 +6,12 @@ import com.roshka.thbackend.model.entity.Postulante;
 import java.util.List;
 
 public interface IPostulanteService {
-    public List<PostulanteDto> listAll();
+    public List<Postulante> listAll();
     public Postulante savePostulante(PostulanteDto postulanteDto);
-    public Postulante updatePostulante(Postulante postulante);
-
+    Postulante findByID(Long id_postulante);
     public void deletePostulante(Long id);
+
+    Postulante updatePostulante(Long id, PostulanteDto postulanteDto);
 
     public Postulante assignTecnologiaToEmployee(Long postulateId, Long tecnlogiaId);
 
