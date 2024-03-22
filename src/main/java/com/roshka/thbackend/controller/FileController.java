@@ -32,7 +32,7 @@ public class FileController {
                             .id_files(fileSave.getId_files())
                             .file_name(fileSave.getFile_name())
                             .file_type(fileSave.getFile_type())
-                            .data(fileSave.getData())
+//                            .data(fileSave.getData())
                             .build())
                     .build()
                     , HttpStatus.CREATED);

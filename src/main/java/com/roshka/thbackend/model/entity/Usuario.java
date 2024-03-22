@@ -36,6 +36,7 @@ public class Usuario implements Serializable {
     @Column(name="reset_password")
     private boolean resetPassword;
 
+   
     /** RELACIONES PARA LA BASE DE DATOS **/
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "usuario_rol",
