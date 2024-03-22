@@ -55,7 +55,7 @@ public class UsuarioController {
                             .apellido(usuarioSave.getApellido())
                             .password(usuarioSave.getPassword())
                             .resetPassword(usuarioSave.isResetPassword())
-                            .rol(usuarioSave.getRol())
+                            .roles(usuarioSave.getRoles())
                             .build())
                     .build()
                     , HttpStatus.CREATED);
@@ -86,7 +86,7 @@ public class UsuarioController {
                                 .apellido(usuarioUpdate.getApellido())
                                 .password(usuarioUpdate.getPassword())
                                 .resetPassword(usuarioUpdate.isResetPassword())
-                                .rol(usuarioUpdate.getRol())
+                                .roles(usuarioUpdate.getRoles())
                                 .build())
                         .build()
                         , HttpStatus.CREATED);
@@ -149,7 +149,7 @@ public class UsuarioController {
                                 .apellido(usuario.getApellido())
                                 .password(usuario.getPassword())
                                 .resetPassword(usuario.isResetPassword())
-                                .rol(usuario.getRol())
+                                .roles(usuario.getRoles())
                                 .build())
                         .build()
                 , HttpStatus.OK);
