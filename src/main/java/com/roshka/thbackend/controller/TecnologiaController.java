@@ -1,14 +1,21 @@
 package com.roshka.thbackend.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.roshka.thbackend.model.dto.TecnologiaDto;
+import com.roshka.thbackend.model.entity.Estado;
 import com.roshka.thbackend.model.entity.Tecnologia;
 import com.roshka.thbackend.service.ITecnologiaService;
+import jakarta.annotation.PostConstruct;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,17 +34,25 @@ public class TecnologiaController {
         return ResponseEntity.ok().body(tecnologias);
     }
 
-    @PostMapping("/tecnologia/agregar")
-    @ResponseStatus(HttpStatus.CREATED)
-    public List<TecnologiaDto> create(@RequestBody List<TecnologiaDto> tecnologiaDtoList){
+    @PostConstruct
+    public void init() {
+        try {
+            // Lee el archivo JSON
+            String json = new String(Files.readAllBytes(Paths.get("src/main/resources/JSON/tecnologias.json")));
 
-        List<TecnologiaDto> tecnologiaDtoResponseList = new ArrayList<>();
+            // Convierte el JSON a objetos Java (por ejemplo, utilizando Jackson ObjectMapper)
+            ObjectMapper objectMapper = new ObjectMapper();
+            List<Tecnologia> tecnologias = objectMapper.readValue(json, new TypeReference<List<Tecnologia>>() {});
 
-        for (TecnologiaDto tecnologiaDto : tecnologiaDtoList) {
-            tecnologiaService.save(tecnologiaDto);
-            tecnologiaDtoResponseList.add(tecnologiaDto);
+            // Guarda los datos en la base de datos
+            for (Tecnologia tecnologia : tecnologias) {
+                tecnologiaService.save(tecnologia);
+            }
+
+            System.out.println("Datos cargados exitosamente desde el JSON.");
+
+        } catch (IOException e) {
+            System.err.println("Error al cargar los datos desde el JSON: " + e.getMessage());
         }
-
-        return tecnologiaDtoResponseList;
     }
 }

@@ -45,7 +45,7 @@ public class SecurityConfig {
                         //authorize.anyRequest().authenticated()
                         authorize.requestMatchers(HttpMethod.GET, "/thbackend/**").permitAll()
                                 .requestMatchers("/thbackend/auth/**").permitAll()
-                                .requestMatchers("/thbackend/**").permitAll()
+                                .requestMatchers("/thbackend/v1/**").permitAll()
                                 .anyRequest().authenticated()
 
                 );

@@ -22,8 +22,7 @@ public class EstadoImplService implements EstadoService {
 
     @Transactional
     @Override
-    public Estado guardar_estado(EstadoDto estadoDto) {
-        Estado estado = modelMapper.map(estadoDto, Estado.class);
+    public Estado guardar_estado(Estado estado) {
         return estadoDao.save(estado);
     }
 
