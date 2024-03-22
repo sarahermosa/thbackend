@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface ICiudadService {
 
-    Ciudad guardar_ciudad(CiudadDto ciudad);
+    Ciudad guardar_ciudad(Ciudad ciudad);
 
     List<Ciudad> listAll();
 

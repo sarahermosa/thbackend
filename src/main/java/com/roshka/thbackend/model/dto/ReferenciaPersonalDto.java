@@ -26,4 +26,5 @@ public class ReferenciaPersonalDto {
     public void setId_postulante(Long id_postulante){
         this.id_postulante = id_postulante;
     }
+
 }
