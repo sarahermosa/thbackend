@@ -20,7 +20,7 @@ public class FileImplService implements IFileService {
 
     @Override
     public List<File> listAll() {
-        return null;
+        return (List) fileDao.findAll();
     }
 
     @Transactional
@@ -30,23 +30,28 @@ public class FileImplService implements IFileService {
               .id_files(fileDto.getId_files())
               .file_name(fileDto.getFile_name())
               .file_type(fileDto.getFile_type())
-              .data(fileDto.getData())
+//              .data(fileDto.getData())
               .build();
       return fileDao.save(file);
     }
 
     @Override
     public File findById(Long id) {
-        return null;
+        return fileDao.findById(id).orElse(null);
     }
 
     @Override
     public void delete(File file) {
-
+        fileDao.delete(file);
     }
 
     @Override
-    public boolean existsById(File file) {
-        return false;
+    public boolean existsById(Long id) {
+        return fileDao.existsById(id);
     }
+
+
+
+
+
 }

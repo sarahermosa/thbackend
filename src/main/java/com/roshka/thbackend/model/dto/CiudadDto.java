@@ -9,8 +9,8 @@ import java.io.Serializable;
 @Data
 @ToString
 @Builder
-public class CiudadDto implements Serializable {
+public class CiudadDto {
 
-    private Long id;
+    private Long id_ciudad;
     private String nombre;
 }

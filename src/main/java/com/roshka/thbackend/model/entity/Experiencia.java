@@ -1,6 +1,7 @@
 package com.roshka.thbackend.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.Date;
@@ -43,8 +44,4 @@ public class Experiencia {
     @Column(name = "tipo_experiencia")
     private String tipo_experiencia;
     //VALORES POSIBLES : TRABAJO NORMAL - PASANTIA
-
-    @Column(name = "postulante_id")
-    private int postulante_id; //DEBE DE TENER LA RELACION CON POSTULANTE
-
 }
