@@ -2,6 +2,7 @@ package com.roshka.thbackend.service.impl;
 
 import com.roshka.thbackend.model.dao.ConvocatoriaDao;
 import com.roshka.thbackend.model.dto.ConvocatoriaDto;
+import com.roshka.thbackend.model.dto.ConvocatoriaOutputDto;
 import com.roshka.thbackend.model.entity.Convocatoria;
 import com.roshka.thbackend.service.IConvocatoriaService;
 import jakarta.transaction.Transactional;
@@ -32,16 +33,27 @@ public class ConvocatoriaImplService implements IConvocatoriaService {
     private ModelMapper modelMapper;
 
     @Override
-    public List<Convocatoria> listAll() throws DataFormatException, IOException {
-        return (List) convocatoriaDao.findAll();
-//        List<Convocatoria> afterDecodingImages = new ArrayList<Convocatoria>();
-//        for(Convocatoria undecodedConvocatoria : beforeDecodingImages){
-//            if(undecodedConvocatoria.getImageData() != null) {
-//                undecodedConvocatoria.setImageData(decompressImage(undecodedConvocatoria.getImageData()));
-//            }
-//            afterDecodingImages.add(undecodedConvocatoria);
-//        }
+    public List<ConvocatoriaOutputDto> listAll() throws DataFormatException, IOException {
+        List<Convocatoria> convocatorias =  (List) convocatoriaDao.findAll();
+        List<ConvocatoriaOutputDto> convocatoriasOut = new ArrayList<ConvocatoriaOutputDto>();
+        List<Path> pathToConvocatorias = new ArrayList<Path>();
+        for (Convocatoria convocatoria : convocatorias) {
+            ConvocatoriaOutputDto output = new ConvocatoriaOutputDto();
+            output.setId_convocatoria(convocatoria.getId_convocatoria());
+            output.setTitle(convocatoria.getTitle());
+            output.setDescription(convocatoria.getDescription());
+            output.setFecha_inicio(convocatoria.getFecha_inicio());
+            output.setFecha_fin(convocatoria.getFecha_fin());
+            output.setLink(convocatoria.getLink());
 
+            Path directorio = Paths.get(convocatoria.getImageData());
+            String rutaAbsoluta = directorio.toFile().getAbsolutePath();
+            Path rutaCompleta=Paths.get(rutaAbsoluta);
+            output.setFile_path(rutaCompleta);
+            convocatoriasOut.add(output);
+
+        }
+        return convocatoriasOut;
 
     }
 

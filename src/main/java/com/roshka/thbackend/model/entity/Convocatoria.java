@@ -36,7 +36,6 @@ public class Convocatoria implements Serializable {
     @Column(name = "link")
     private String link;
 
-    @Lob
     @Column(name = "imagedata")
     private String imageData;
 

@@ -3,6 +3,7 @@ package com.roshka.thbackend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.roshka.thbackend.model.dto.ConvocatoriaDto;
+import com.roshka.thbackend.model.dto.ConvocatoriaOutputDto;
 import com.roshka.thbackend.model.dto.FileDto;
 import com.roshka.thbackend.model.entity.Convocatoria;
 import com.roshka.thbackend.model.entity.File;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +50,7 @@ public class ConvocatoriaController {
 
     @GetMapping("convocatoria")
     public  ResponseEntity<?> listConvocatoria() throws Exception {
-        List<Convocatoria> convocatorias = convocatoriaService.listAll();
+        List<ConvocatoriaOutputDto> convocatorias = convocatoriaService.listAll();
         return ResponseEntity.ok().body(convocatorias);
     }
 
