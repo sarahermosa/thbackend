@@ -75,8 +75,4 @@ public class PostulanteImpService implements IPostulanteService {
         postulante.setTecnologiasasignadas(tecnologiaSet);
         return postulanteDao.save(postulante);
     }
-
-
 }
-
-

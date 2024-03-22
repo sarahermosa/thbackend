@@ -1,5 +1,6 @@
 package com.roshka.thbackend.model.dto;
 
+import com.roshka.thbackend.model.Estudio;
 import com.roshka.thbackend.model.entity.Ciudad;
 import com.roshka.thbackend.model.entity.Experiencia;
 import com.roshka.thbackend.model.entity.File;
@@ -36,6 +37,6 @@ public class PostulanteDto {
     private List<Experiencia> experiencias;
     private Set<Tecnologia> tecnologiasasignadas;
     private List<Long> tecnologiasList;
-
-
+    private Ciudad ciudad;
+    private List<Estudio> estudios = new ArrayList<>();
 }
