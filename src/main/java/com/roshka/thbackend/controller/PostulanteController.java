@@ -1,10 +1,9 @@
 package com.roshka.thbackend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.roshka.thbackend.model.dto.ExperienciaDto;
-import com.roshka.thbackend.model.dto.PostulanteDto;
+import com.roshka.thbackend.model.dto.*;
 import com.roshka.thbackend.model.entity.*;
-import com.roshka.thbackend.service.EstadoService;
+import com.roshka.thbackend.service.*;
 import com.roshka.thbackend.service.ICiudadService;
 import com.roshka.thbackend.service.IPostulanteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +37,8 @@ public class PostulanteController {
                                              @RequestParam("files") MultipartFile[] files,
                                              @RequestParam("experiencias") String experiencias,
                                              @RequestParam("estudios") String estudios,
-                                             @RequestParam("tecnologias_id") String tecnologiasId)
+                                             @RequestParam("tecnologias_id") String tecnologiasId,
+                                             @RequestParam("referencias_personales") String referencias)
                                              throws IOException {
 
 
@@ -50,6 +50,7 @@ public class PostulanteController {
             List<MultipartFile> incomingFiles = Arrays.asList(files);
             List<Estudio> estudiosList = mapper.readValue(estudios, mapper.getTypeFactory().constructCollectionType(List.class, Estudio.class));
             List<Long> tecnologiasListId = mapper.readValue(tecnologiasId, mapper.getTypeFactory().constructCollectionType(List.class, Long.class));
+            List<ReferenciaPersonal> referenciaPersonalList = mapper.readValue(referencias, mapper.getTypeFactory().constructCollectionType(List.class, ReferenciaPersonal.class));
             Optional<Ciudad> ciudad = ciudadService.findById(dto.getId_ciudad());
             Optional<Estado> estado = Optional.ofNullable(estadoService.findById(dto.getId_estado()));
 
@@ -57,8 +58,8 @@ public class PostulanteController {
             dto.setExperiencias(experienciasList);
             dto.setEstudios(estudiosList);
             dto.setTecnologiasList(tecnologiasListId);
-//            dto.setCiudad(ciudad.get());
-//            dto.setEstado(estado.get());
+            dto.setReferencia_personal(referenciaPersonalList);
+
 
             postulanteService.savePostulante(dto);
         }catch (Exception e){

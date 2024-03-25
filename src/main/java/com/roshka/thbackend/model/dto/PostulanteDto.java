@@ -1,11 +1,6 @@
 package com.roshka.thbackend.model.dto;
 
-import com.roshka.thbackend.model.entity.Estudio;
-import com.roshka.thbackend.model.entity.Ciudad;
-import com.roshka.thbackend.model.entity.Estado;
-import com.roshka.thbackend.model.entity.Experiencia;
-import com.roshka.thbackend.model.entity.File;
-import com.roshka.thbackend.model.entity.Tecnologia;
+import com.roshka.thbackend.model.entity.*;
 import jakarta.persistence.Table;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,7 +34,7 @@ public class PostulanteDto {
     private List<MultipartFile> filesMultipart;
     private List<Experiencia> experiencias;
     private List<Estudio> estudios = new ArrayList<>();
-
+    private List<ReferenciaPersonal> referencia_personal = new ArrayList<>();
 
     private List<File> files = new ArrayList<>();
     private Long id_ciudad;

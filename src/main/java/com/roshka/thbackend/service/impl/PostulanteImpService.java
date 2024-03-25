@@ -51,7 +51,7 @@ public class PostulanteImpService implements IPostulanteService {
     @Transactional
     public Postulante savePostulante(PostulanteDto PostulanteDto) throws IOException {
         System.out.println(PostulanteDto);
-
+        System.out.println(PostulanteDto.getReferencia_personal());
         Postulante postulante = modelMapper.map(PostulanteDto, Postulante.class);
         postulante.setTecnologiasasignadas(new HashSet<>());
         postulanteDao.save(postulante);

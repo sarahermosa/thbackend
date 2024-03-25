@@ -30,9 +30,9 @@ public class ReferenciaPersonal implements Serializable {
 
     @NotBlank(message = "El campo no puede estar vacio")
     @Column (name = "telefono")
-    private Integer telefono;
+    private String telefono;
 
-    @ManyToOne(cascade = CascadeType.ALL, optional = false, targetEntity = Postulante.class)
-    @JoinColumn (name = "id_postulante")
-    private int id_postulante;
+//    @ManyToOne(cascade = CascadeType.ALL, optional = false, targetEntity = Postulante.class)
+//    @JoinColumn (name = "id_postulante")
+//    private int id_postulante;
 }
