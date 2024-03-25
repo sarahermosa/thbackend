@@ -25,6 +25,7 @@ import java.util.Optional;
 
 
 @RestController
+@CrossOrigin
 @RequestMapping("/thbackend/v1")
 public class PostulanteController {
 
