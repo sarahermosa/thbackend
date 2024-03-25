@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -35,27 +37,36 @@ public class PostulanteController {
     @Autowired
     private EstadoService estadoService;
 
+    @Autowired //INYECCION DE DEPENDENCIAS PARA EL EMAIL
+    private JavaMailSender javaMailSender;
+
     @PostMapping("postulante")
    public ResponseEntity<?> createPostulante(@RequestBody PostulanteDto postulante){
         Optional<Ciudad> ciudad = ciudadService.findById(postulante.getId_ciudad());
         Optional<Estado> estado = Optional.ofNullable(estadoService.findById(postulante.getId_estado()));
 
+        ciudad.ifPresent(postulante::setCiudad);
+        estado.ifPresent(postulante::setEstado);
 
-        if (ciudad.isPresent()) {
-            postulante.setCiudad(ciudad.get());
-        }
+        //CONFIGURACION PARA EL ENVIO DEL CORREO
+        SimpleMailMessage email = new SimpleMailMessage();
 
-        if (estado.isPresent()){
-            postulante.setEstado(estado.get()
-            );
-        }
+        email.setTo("ferledesma352@gmail.com");
+        email.setFrom("bootcampjava341@gmail.com");
+        email.setSubject("Incripcion Convocatoria");
+        email.setText("Hola!!" + postulante.getNombre() + "Gracias por inscribirte a la convocatoria\n\nNO RESPONDER ESTE MENSAJE");
+
+        javaMailSender.send(email);
+        //FIN DE CONFIGURACION PARA ENVIO DE CORREO
+
         try {
             postulanteService.savePostulante(postulante);
             return ResponseEntity.ok().body("Guardado correctamente");
         }catch (Exception e) {
-                // Si ocurre un error, se devuelve un mensaje de error con el código de estado correspondiente
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al guardar la entidad: " + e.getMessage());
             }
+
+
     }
 
     @GetMapping("postulante")
