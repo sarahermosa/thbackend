@@ -40,7 +40,7 @@ public class ConvocatoriaImplService implements IConvocatoriaService {
     public List<ConvocatoriaOutputDto> listAll() throws DataFormatException, IOException {
         List<Convocatoria> convocatorias =  (List) convocatoriaDao.findAll();
         List<ConvocatoriaOutputDto> convocatoriasOut = new ArrayList<ConvocatoriaOutputDto>();
-        List<Path> pathToConvocatorias = new ArrayList<Path>();
+
         for (Convocatoria convocatoria : convocatorias) {
             ConvocatoriaOutputDto output = new ConvocatoriaOutputDto();
             output.setId_convocatoria(convocatoria.getId_convocatoria());
@@ -51,12 +51,10 @@ public class ConvocatoriaImplService implements IConvocatoriaService {
             output.setLink(convocatoria.getLink());
 
 
-            String imagePath = convocatoria.getImageData().toString(); // Extract just the file name
             String baseUrl = request.getRequestURL().toString().replace(request.getRequestURI(), "");
-            String imageUrl = baseUrl + "/"+ imagePath; // Construct the URL
-            output.setFile_path(imageUrl); // Set the URL as a Path
+            String imageUrl = baseUrl + "/" + convocatoria.getImageData().replace("\\", "/"); // Replace backslashes with forward slashes
 
-
+            output.setFile_path(imageUrl);
             convocatoriasOut.add(output);
 
 
@@ -81,6 +79,7 @@ public class ConvocatoriaImplService implements IConvocatoriaService {
             String rutaAbsoluta = directoriImagenes.toFile().getAbsolutePath();
             try {
                 byte[] bytesImg=convocatoriaDto.getFile().getBytes();
+
                 Path rutaCompleta=Paths.get(rutaAbsoluta);
                 Files.write(rutaCompleta, bytesImg);
 

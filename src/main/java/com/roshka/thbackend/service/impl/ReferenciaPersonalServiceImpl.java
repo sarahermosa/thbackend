@@ -6,6 +6,8 @@ import com.roshka.thbackend.model.entity.ReferenciaPersonal;
 import com.roshka.thbackend.service.ReferenciaPersonalService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,11 +18,12 @@ public class ReferenciaPersonalServiceImpl implements ReferenciaPersonalService 
 
     private ReferenciaPersonalDao referenciaPersonalDao;
 
+
     @Transactional
     @Override
     public ReferenciaPersonal guardarReferenciaPersonal(ReferenciaPersonalDto referenciaPersonalDto) {
         ReferenciaPersonal referenciaPersonal = ReferenciaPersonal.builder()
-                .id(referenciaPersonalDto.getId())
+                .id(referenciaPersonalDto.getId_referencia_personal())
                 .nombre(referenciaPersonalDto.getNombre())
                 .relacion(referenciaPersonalDto.getRelacion())
                 .telefono(referenciaPersonalDto.getTelefono())

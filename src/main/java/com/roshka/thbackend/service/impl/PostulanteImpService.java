@@ -1,25 +1,26 @@
 package com.roshka.thbackend.service.impl;
 
+import com.roshka.thbackend.model.dao.CiudadDao;
+import com.roshka.thbackend.model.dao.EstadoDao;
 import com.roshka.thbackend.model.dao.PostulanteDao;
 import com.roshka.thbackend.model.dao.TecnologiaDao;
 import com.roshka.thbackend.model.dto.PostulanteDto;
-import com.roshka.thbackend.model.dto.TecnologiaDto;
-import com.roshka.thbackend.model.entity.Postulante;
-import com.roshka.thbackend.model.entity.Tecnologia;
+import com.roshka.thbackend.model.entity.*;
 import com.roshka.thbackend.service.IPostulanteService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-
-import java.util.Set;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 @Service
 public class PostulanteImpService implements IPostulanteService {
@@ -33,6 +34,14 @@ public class PostulanteImpService implements IPostulanteService {
     @Autowired
     private TecnologiaDao tecnologiaDao;
 
+    @Autowired
+    private EstadoDao estadoDao;
+
+    @Autowired
+    private CiudadDao ciudadDao;
+    @Autowired
+    private HttpServletRequest request;
+
     @Override
     public List<Postulante> listAll() {
         return  (List) postulanteDao.findAll();
@@ -40,18 +49,47 @@ public class PostulanteImpService implements IPostulanteService {
 
     @Override
     @Transactional
-    public Postulante savePostulante(PostulanteDto PostulanteDto) {
+    public Postulante savePostulante(PostulanteDto PostulanteDto) throws IOException {
         System.out.println(PostulanteDto);
+
         Postulante postulante = modelMapper.map(PostulanteDto, Postulante.class);
         postulante.setTecnologiasasignadas(new HashSet<>());
-        postulanteDao.save(postulante); //create a new postulante without tecnologias
+        postulanteDao.save(postulante);
 
-        for(Long tecnologiaId : PostulanteDto.getTecnologiasList()){
-            System.out.println(tecnologiaId);
-            assignTecnologiaToEmployee(postulante.getId_postulante(), tecnologiaId);
+        for (Long tecnologiaId : PostulanteDto.getTecnologiasList()) {
+            assignTecnologiaToPostulante(postulante.getId_postulante(), tecnologiaId);
         }
-        //after this postulante it is saved with tecnologias
+
+        List<File> files = new ArrayList<>();
+        for ( MultipartFile file : PostulanteDto.getFilesMultipart()) {
+            InputStream fileInputStream = file.getInputStream();
+            String fileExtension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf('.'));
+            Path directoriImagenes =  Paths.get("cv/" + DigestUtils.md5DigestAsHex(fileInputStream)+fileExtension);
+            String rutaAbsoluta = directoriImagenes.toFile().getAbsolutePath();
+            try{
+                byte[] bytesImg=file.getBytes();
+                Path rutaCompleta=Paths.get(rutaAbsoluta);
+                Files.write(rutaCompleta, bytesImg);
+            }catch(IOException e){
+                System.out.println("Error al subir el archivo");
+            }
+            File f = new File();
+            String baseUrl = request.getRequestURL().toString().replace(request.getRequestURI(), "");
+            String fileUrl = baseUrl+"/"+directoriImagenes.toString().replace("\\", "/");
+            f.setLinkToFile(fileUrl);
+            f.setFile_type(fileExtension);
+            files.add(f);
+        }
+        postulante.setFiles(files);
+
+        assignCityToPostulante(postulante.getId_postulante(), PostulanteDto.getId_ciudad());
+        assignEstadoToPostulante(postulante.getId_postulante(), PostulanteDto.getId_estado());
+
+        postulanteDao.save(postulante);
+        System.out.println(postulante);
         return postulante;
+
+
 
     }
 
@@ -62,7 +100,7 @@ public class PostulanteImpService implements IPostulanteService {
 
     @Override
     public void deletePostulante(Long id) {
-
+        postulanteDao.deleteById(id);
     }
 
     @Override
@@ -92,18 +130,35 @@ public class PostulanteImpService implements IPostulanteService {
     }
 
     @Override
-    public Postulante assignTecnologiaToEmployee(Long postulateId, Long tecnlogiaId) {
+    public Postulante assignTecnologiaToPostulante(Long postulateId, Long tecnlogiaId) {
 
         Tecnologia tecnologia = tecnologiaDao.findById(tecnlogiaId).get();
-        System.out.println(tecnologia);
         Postulante postulante = postulanteDao.findById(postulateId).get();
-
         Set<Tecnologia> tecnologiaSet = postulante.getTecnologiasasignadas();
-        System.out.println(tecnologiaSet);
         tecnologiaSet.add(tecnologia);
-        System.out.println("here");
-        System.out.println(tecnologiaSet);
         postulante.setTecnologiasasignadas(tecnologiaSet);
         return postulanteDao.save(postulante);
     }
+
+    @Override
+    public Postulante assignCityToPostulante(Long postulateId, Long ciudadId) {
+
+        Ciudad city = ciudadDao.findById(ciudadId).get();
+        Postulante postulante = postulanteDao.findById(postulateId).get();
+
+        postulante.setCiudad(city);
+        return postulanteDao.save(postulante);
+    }
+
+    @Override
+    public Postulante assignEstadoToPostulante(Long postulateId, Long estadoId) {
+
+        Estado estado = estadoDao.findById(estadoId).get();
+        Postulante postulante = postulanteDao.findById(postulateId).get();
+
+        postulante.setEstado(estado);
+        return postulanteDao.save(postulante);
+    }
+
+
 }

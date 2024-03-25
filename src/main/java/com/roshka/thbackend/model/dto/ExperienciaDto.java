@@ -5,9 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Builder;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -15,6 +13,8 @@ import java.util.Date;
 @Data
 @ToString
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ExperienciaDto implements Serializable {
 
     private Long id;

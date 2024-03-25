@@ -10,10 +10,8 @@ import lombok.*;
 public class FileDto {
 
     private Long id_files;
-    private String file_name;
-//    private byte[] data;
+    private String linkToFile;
     private String file_type;
-
 }
 
 

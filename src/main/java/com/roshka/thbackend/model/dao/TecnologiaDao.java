@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.repository.CrudRepository;
 
 @Repository
-public interface TecnologiaDao extends JpaRepository<TecnologiaDao, Long> {
+public interface TecnologiaDao extends JpaRepository<Tecnologia, Long> {
 }

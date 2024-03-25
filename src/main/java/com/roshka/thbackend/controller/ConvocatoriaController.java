@@ -40,12 +40,18 @@ public class ConvocatoriaController {
     public ResponseEntity<?> create(@RequestParam("convocatoriaDto") String convocatoriaDto,
                                     @RequestParam("file") MultipartFile file) throws IOException {
 
+    try{
         ObjectMapper mapper = new ObjectMapper();
         ConvocatoriaDto dto = mapper.readValue(convocatoriaDto, ConvocatoriaDto.class);
         dto.setFile(file);
-        System.out.println(dto);
         convocatoriaService.save(dto);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     @GetMapping("convocatoria")
