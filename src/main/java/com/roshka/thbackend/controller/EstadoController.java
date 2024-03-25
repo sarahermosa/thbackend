@@ -20,6 +20,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/thbackend/v1")
 public class EstadoController {
 
