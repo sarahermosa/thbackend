@@ -9,4 +9,7 @@ public interface UsuarioDao extends CrudRepository<Usuario, Integer> {
     Optional<Usuario> findByEmail(String email);
 
     boolean existsByEmail(String email);
+
+    Optional<Usuario> findByEmailAndPassword(String email, String password);
+
 }
