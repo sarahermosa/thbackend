@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
@@ -93,6 +94,11 @@ public class ConvocatoriaImplService implements IConvocatoriaService {
                         .link(convocatoriaDto.getLink())
                         .imageData(directoriImagenes.toString())
                         .build();
+                convocatoriaDao.save(convocatoria);
+
+//                Convocatoria convocatoriaLinkUpdated = convocatoriaDao.findById(convocatoria.getId_convocatoria());
+
+//                convocatoriaLinkUpdated.
                 return convocatoriaDao.save(convocatoria);
             } catch (IOException e) {
                 throw new RuntimeException(e);

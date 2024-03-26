@@ -42,6 +42,7 @@ public class ConvocatoriaController {
 
     try{
         ObjectMapper mapper = new ObjectMapper();
+
         ConvocatoriaDto dto = mapper.readValue(convocatoriaDto, ConvocatoriaDto.class);
         dto.setFile(file);
         convocatoriaService.save(dto);

@@ -8,7 +8,9 @@ import lombok.*;
 import org.hibernate.annotations.Type;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 @Data
@@ -28,17 +30,19 @@ public class Convocatoria implements Serializable {
     private String title;
     @Column(name = "descripcion")
     @NotEmpty
+    @Lob
     private String description;
     @Column(name = "fecha_inicio")
     private Date fecha_inicio;
     @Column(name = "fecha_fin")
     private Date fecha_fin;
     @Column(name = "link")
-    private String link;
+    private String link="convocatoria/"+id_convocatoria;
 
     @Column(name = "imagedata")
     private String imageData;
 
 
-
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Postulante> postulantes = new ArrayList<>();
 }

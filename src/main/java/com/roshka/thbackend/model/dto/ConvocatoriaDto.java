@@ -19,7 +19,7 @@ public class ConvocatoriaDto {
     private String description;
     private Date fecha_inicio;
     private Date fecha_fin;
-    private String link;
+    private String link="convocatoria/"+id_convocatoria;
     private MultipartFile file;
 
 }

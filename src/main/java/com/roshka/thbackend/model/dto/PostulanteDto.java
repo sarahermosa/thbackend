@@ -35,6 +35,7 @@ public class PostulanteDto {
     private List<Experiencia> experiencias;
     private List<Estudio> estudios = new ArrayList<>();
     private List<ReferenciaPersonal> referencia_personal = new ArrayList<>();
+    private  Convocatoria convocatoria;
 
     private List<File> files = new ArrayList<>();
     private Long id_ciudad;
