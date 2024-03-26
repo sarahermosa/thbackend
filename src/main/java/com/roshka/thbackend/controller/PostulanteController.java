@@ -49,12 +49,16 @@ public class PostulanteController {
             List<Estudio> estudiosList = mapper.readValue(estudios, mapper.getTypeFactory().constructCollectionType(List.class, Estudio.class));
             List<Long> tecnologiasListId = mapper.readValue(tecnologiasId, mapper.getTypeFactory().constructCollectionType(List.class, Long.class));
             List<ReferenciaPersonal> referenciaPersonalList = mapper.readValue(referencias, mapper.getTypeFactory().constructCollectionType(List.class, ReferenciaPersonal.class));
-            dto.setConvocatoria(convocatoriaService.findById(Long.parseLong(convocatoriaId)));
+            Convocatoria convocatoria = convocatoriaService.findById(Long.parseLong(convocatoriaId));
+            dto.setConvocatoria(convocatoria);
             dto.setFilesMultipart(incomingFiles);
             dto.setExperiencias(experienciasList);
             dto.setEstudios(estudiosList);
             dto.setTecnologiasList(tecnologiasListId);
             dto.setReferencia_personal(referenciaPersonalList);
+
+
+
 
             System.out.println(dto);
             postulanteService.savePostulante(dto);

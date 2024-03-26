@@ -42,6 +42,7 @@ public class PostulanteImpService implements IPostulanteService {
     @Autowired
     private HttpServletRequest request;
 
+
     @Override
     public List<Postulante> listAll() {
         return  (List) postulanteDao.findAll();
@@ -84,6 +85,8 @@ public class PostulanteImpService implements IPostulanteService {
 
         assignCityToPostulante(postulante.getId_postulante(), PostulanteDto.getId_ciudad());
         assignEstadoToPostulante(postulante.getId_postulante(), PostulanteDto.getId_estado());
+
+        
 
         postulanteDao.save(postulante);
         System.out.println(postulante);
