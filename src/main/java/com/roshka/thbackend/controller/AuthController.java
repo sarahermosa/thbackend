@@ -1,11 +1,20 @@
 package com.roshka.thbackend.controller;
 
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.roshka.thbackend.model.dto.RolesDto;
+import com.roshka.thbackend.model.entity.Ciudad;
+import com.roshka.thbackend.service.RolService;
+import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +62,9 @@ public class AuthController {
 
     @Autowired
     JwtUtils jwtUtils;
+
+    @Autowired
+    private RolService rolService;
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginDto loginRequest) {
@@ -122,7 +134,27 @@ public class AuthController {
 
         return new ResponseEntity<>(MensajeResponse.builder()
                 .mensaje("User registered successfully!")
+                .object(user.getEmail())
                 .build()
                 , HttpStatus.CREATED);
+    }
+
+    //para insertar los roles
+    @PostConstruct
+    public void initRoles()  {
+        // Verifica si la tabla de roles está vacía
+        if (roleRepository.count() == 0) {
+            // Si está vacía, guarda los roles ROLE_ADMIN y ROLE_USER
+            Rol adminRole = Rol.builder().descripcion(ERole.ROLE_ADMIN).build();
+            Rol userRole = Rol.builder().descripcion(ERole.ROLE_USER).build();
+
+            roleRepository.save(adminRole);
+            roleRepository.save(userRole);
+
+            System.out.println("Se han insertado los roles: "+ ERole.ROLE_USER+", " + ERole.ROLE_ADMIN);
+
+        } else {
+            System.out.println("La tabla de roles ya contiene registros");
+    }
     }
 }
