@@ -35,7 +35,7 @@ public class Usuario implements Serializable {
     private String password;
 
     /** RELACIONES PARA LA BASE DE DATOS **/
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "usuario_rol",
             joinColumns = @JoinColumn(name = "id_usuario"),
             inverseJoinColumns = @JoinColumn(name = "id_rol"))
@@ -47,6 +47,8 @@ public class Usuario implements Serializable {
         this.email = email;
         this.password = password;
     }
+
+
 
 
 }

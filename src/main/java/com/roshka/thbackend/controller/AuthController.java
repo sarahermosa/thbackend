@@ -1,22 +1,12 @@
 package com.roshka.thbackend.controller;
 
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.roshka.thbackend.model.dto.RolesDto;
-import com.roshka.thbackend.model.entity.Ciudad;
-import com.roshka.thbackend.service.RolService;
 import jakarta.annotation.PostConstruct;
+import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.roshka.thbackend.model.entity.ERole;
 import com.roshka.thbackend.model.entity.Rol;
 import com.roshka.thbackend.model.entity.Usuario;
@@ -62,9 +51,6 @@ public class AuthController {
 
     @Autowired
     JwtUtils jwtUtils;
-
-    @Autowired
-    private RolService rolService;
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginDto loginRequest) {
@@ -139,22 +125,47 @@ public class AuthController {
                 , HttpStatus.CREATED);
     }
 
-    //para insertar los roles
+    @Transactional
     @PostConstruct
-    public void initRoles()  {
+    public void init()  {
         // Verifica si la tabla de roles está vacía
         if (roleRepository.count() == 0) {
-            // Si está vacía, guarda los roles ROLE_ADMIN y ROLE_USER
             Rol adminRole = Rol.builder().descripcion(ERole.ROLE_ADMIN).build();
             Rol userRole = Rol.builder().descripcion(ERole.ROLE_USER).build();
 
             roleRepository.save(adminRole);
             roleRepository.save(userRole);
 
+            // Hacer flush para sincronizar con la base de datos
+            roleRepository.flush();
+
             System.out.println("Se han insertado los roles: "+ ERole.ROLE_USER+", " + ERole.ROLE_ADMIN);
 
         } else {
             System.out.println("La tabla de roles ya contiene registros");
-    }
+        }
+
+        //Crear usuario admin
+
+        Set<Rol> rol = new HashSet<>();
+
+        if(!userRepository.existsByEmail("test@roshka.com")) {
+            Usuario usuarioAdmin = new Usuario("admin", "admin", "test@roshka.com",
+                    encoder.encode("test"));
+
+            Rol adminRole = roleRepository.findByDescripcion(ERole.ROLE_ADMIN)
+                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+            rol.add(adminRole);
+
+            usuarioAdmin.setRoles(rol);
+            userRepository.save(usuarioAdmin);
+            userRepository.flush();
+
+            System.out.println("=======ADMIN USER=======");
+            System.out.println("email: " + usuarioAdmin.getEmail());
+            System.out.println("password: test");
+        } else {
+            System.out.println("Usuario TEST ya existe");
+        }
     }
 }
