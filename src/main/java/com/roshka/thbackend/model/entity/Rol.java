@@ -18,7 +18,8 @@ public class Rol implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idRol;
 
-    @Column(name="descripcion")
-    private String descripcion;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private ERole descripcion;
 
 }

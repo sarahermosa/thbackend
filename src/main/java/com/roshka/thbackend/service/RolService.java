@@ -16,8 +16,5 @@ public interface RolService {
 
     void delete(Rol rol);
 
-    boolean existsById(Integer id);
-
-    Rol findByName(String descripcion);
 
 }

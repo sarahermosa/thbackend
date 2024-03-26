@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class UsuarioController {
     private UsuarioService usuarioService;
 
     //Listar usuarios
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("usuarios")
     public ResponseEntity<?> showAll() {
         List<Usuario> getList = usuarioService.listAll();
@@ -54,7 +56,6 @@ public class UsuarioController {
                             .nombre(usuarioSave.getNombre() )
                             .apellido(usuarioSave.getApellido())
                             .password(usuarioSave.getPassword())
-                            .resetPassword(usuarioSave.isResetPassword())
                             .roles(usuarioSave.getRoles())
                             .build())
                     .build()
@@ -85,7 +86,6 @@ public class UsuarioController {
                                 .nombre(usuarioUpdate.getNombre())
                                 .apellido(usuarioUpdate.getApellido())
                                 .password(usuarioUpdate.getPassword())
-                                .resetPassword(usuarioUpdate.isResetPassword())
                                 .roles(usuarioUpdate.getRoles())
                                 .build())
                         .build()
@@ -148,7 +148,6 @@ public class UsuarioController {
                                 .nombre(usuario.getNombre() )
                                 .apellido(usuario.getApellido())
                                 .password(usuario.getPassword())
-                                .resetPassword(usuario.isResetPassword())
                                 .roles(usuario.getRoles())
                                 .build())
                         .build()

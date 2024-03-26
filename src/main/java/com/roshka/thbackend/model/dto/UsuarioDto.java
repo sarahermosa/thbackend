@@ -16,7 +16,6 @@ public class UsuarioDto implements Serializable {
     private String nombre;
     private String apellido;
     private String password;
-    private boolean resetPassword;
     private Set<Rol> roles;
 
 }
