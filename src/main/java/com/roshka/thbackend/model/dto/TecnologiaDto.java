@@ -12,6 +12,5 @@ import lombok.*;
 @AllArgsConstructor
 public class TecnologiaDto {
     private Long id_tecnologia;
-    @NotBlank (message = "El campo no puede estar vacio")
     private String nombre;
 }

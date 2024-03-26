@@ -74,7 +74,6 @@ public class Postulante {
             inverseJoinColumns = @JoinColumn(name = "id_tecnologias", referencedColumnName = "id_tecnologia"))
     private Set<Tecnologia> tecnologiasasignadas = new HashSet<>();
 
-
     @ManyToOne
     @JoinColumn(name = "id_ciudad")
     private Ciudad ciudad;
@@ -88,5 +87,4 @@ public class Postulante {
     @ManyToOne
     @JoinColumn(name = "id_estado")
     private Estado estado;
-
 }

@@ -2,15 +2,9 @@ package com.roshka.thbackend.controller;
 
 import com.roshka.thbackend.model.dto.FileDto;
 import com.roshka.thbackend.model.dto.PostulanteDto;
-import com.roshka.thbackend.model.entity.Ciudad;
-import com.roshka.thbackend.model.entity.Estado;
-import com.roshka.thbackend.model.entity.File;
-import com.roshka.thbackend.model.entity.Postulante;
+import com.roshka.thbackend.model.entity.*;
 import com.roshka.thbackend.model.payload.MensajeResponse;
-import com.roshka.thbackend.service.EstadoService;
-import com.roshka.thbackend.service.ICiudadService;
-import com.roshka.thbackend.service.IFileService;
-import com.roshka.thbackend.service.IPostulanteService;
+import com.roshka.thbackend.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -41,8 +35,12 @@ public class PostulanteController {
     @Autowired //INYECCION DE DEPENDENCIAS PARA EL EMAIL
     private JavaMailSender javaMailSender;
 
+    @Autowired
+    private IConvocatoriaService convocatoriaService;
+
     @PostMapping("postulante")
    public ResponseEntity<?> createPostulante(@RequestBody PostulanteDto postulante){
+        System.out.println(postulante);
         Optional<Ciudad> ciudad = ciudadService.findById(postulante.getId_ciudad());
         Optional<Estado> estado = Optional.ofNullable(estadoService.findById(postulante.getId_estado()));
 
@@ -66,8 +64,6 @@ public class PostulanteController {
         }catch (Exception e) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al guardar la entidad: " + e.getMessage());
             }
-
-
     }
 
     @GetMapping("postulante")

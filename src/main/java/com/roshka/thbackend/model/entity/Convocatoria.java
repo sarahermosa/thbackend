@@ -8,7 +8,9 @@ import lombok.*;
 import org.hibernate.annotations.Type;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 @Data
@@ -35,10 +37,8 @@ public class Convocatoria implements Serializable {
     private Date fecha_fin;
     @Column(name = "link")
     private String link;
-
     @Column(name = "imagedata")
     private String imageData;
-
 
 
 }
