@@ -30,6 +30,7 @@ import java.util.Map;
 
 @RestController
 @Validated
+@CrossOrigin
 @RequestMapping("/thbackend/v1")
 public class ConvocatoriaController {
 

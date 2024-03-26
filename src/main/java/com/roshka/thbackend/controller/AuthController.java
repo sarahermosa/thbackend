@@ -38,6 +38,7 @@ import com.roshka.thbackend.service.impl.UserDetailsImpl;
 @RestController
 @RequestMapping("/thbackend/auth")
 public class AuthController {
+
     @Autowired
     AuthenticationManager authenticationManager;
 

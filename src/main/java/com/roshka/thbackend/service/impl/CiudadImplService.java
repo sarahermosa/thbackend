@@ -24,8 +24,7 @@ public class CiudadImplService implements ICiudadService {
 
     @Transactional
     @Override
-    public Ciudad guardar_ciudad(CiudadDto ciudadDto) {
-        Ciudad ciudad = modelMapper.map(ciudadDto, Ciudad.class);
+    public Ciudad guardar_ciudad(Ciudad ciudad) {
         return ciudadDao.save(ciudad);
     }
 

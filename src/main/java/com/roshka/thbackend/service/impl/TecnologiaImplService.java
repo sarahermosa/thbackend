@@ -25,8 +25,7 @@ public class TecnologiaImplService implements ITecnologiaService {
     }
 
     @Override
-    public Tecnologia save(TecnologiaDto tecnologiaDto) {
-        Tecnologia tecnologia = modelMapper.map(tecnologiaDto, Tecnologia.class);
+    public Tecnologia save(Tecnologia tecnologia) {
         return tecnologiaDao.save(tecnologia);
     }
 

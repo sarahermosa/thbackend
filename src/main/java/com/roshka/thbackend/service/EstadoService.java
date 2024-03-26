@@ -6,7 +6,7 @@ import com.roshka.thbackend.model.entity.Estado;
 import java.util.List;
 
 public interface EstadoService {
-    Estado guardar_estado(EstadoDto estadoDto);
+    Estado guardar_estado(Estado estado);
 
     List<Estado> listAll();
 

@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/thbackend/v1")
 public class ExperienciaController {
 

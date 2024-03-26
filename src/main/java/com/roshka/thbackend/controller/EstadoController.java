@@ -1,18 +1,26 @@
 package com.roshka.thbackend.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.roshka.thbackend.model.dto.EstadoDto;
 import com.roshka.thbackend.model.dto.PostulanteDto;
+import com.roshka.thbackend.model.entity.Ciudad;
 import com.roshka.thbackend.model.entity.Estado;
 import com.roshka.thbackend.model.entity.Postulante;
 import com.roshka.thbackend.service.EstadoService;
+import jakarta.annotation.PostConstruct;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/thbackend/v1")
 public class EstadoController {
 
@@ -28,8 +36,26 @@ public class EstadoController {
         return ResponseEntity.ok().body(estados);
     }
 
-    @PostMapping("/estado")
-    public Estado create(@RequestBody EstadoDto estadoDto){
-        return estadoService.guardar_estado(estadoDto);
+    @PostConstruct
+    public void init() {
+        try {
+            // Lee el archivo JSON
+            String json = new String(Files.readAllBytes(Paths.get("src/main/resources/JSON/estados.json")));
+
+            // Convierte el JSON a objetos Java (por ejemplo, utilizando Jackson ObjectMapper)
+            ObjectMapper objectMapper = new ObjectMapper();
+            List<Estado> estados = objectMapper.readValue(json, new TypeReference<List<Estado>>() {});
+
+            // Guarda los datos en la base de datos
+            for (Estado estado : estados) {
+                estadoService.guardar_estado(estado);
+            }
+
+            System.out.println("Datos cargados exitosamente desde el JSON.");
+
+        } catch (IOException e) {
+            System.err.println("Error al cargar los datos desde el JSON: " + e.getMessage());
+        }
     }
+
 }
