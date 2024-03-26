@@ -3,6 +3,7 @@ package com.roshka.thbackend.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -17,6 +18,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.roshka.thbackend.config.AuthEntryPointJwt;
 import com.roshka.thbackend.config.AuthTokenFilter;
 import com.roshka.thbackend.service.impl.UserDetailsServiceImpl;
+
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 @Configuration
 @EnableMethodSecurity
@@ -60,6 +63,10 @@ public class WebSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/thbackend/auth/**").permitAll()
+                                .requestMatchers(antMatcher(HttpMethod.POST,"/thbackend/v1/convocatoria")).permitAll()
+                                .requestMatchers(antMatcher(HttpMethod.GET,"/thbackend/v1/convocatoria")).permitAll()
+                                .requestMatchers(antMatcher(HttpMethod.GET,"/thbackend/v1/ciudades")).permitAll()
+                                .requestMatchers(antMatcher(HttpMethod.GET,"/thbackend/v1/tecnologia")).permitAll()
                                 .anyRequest().authenticated()
                 );
 
