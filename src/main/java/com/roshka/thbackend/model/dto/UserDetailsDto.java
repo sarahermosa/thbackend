@@ -1,26 +1,23 @@
 package com.roshka.thbackend.model.dto;
 
 import com.roshka.thbackend.model.entity.Rol;
-import jakarta.validation.constraints.NotEmpty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.util.Set;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
-@ToString
-@Builder
-public class UsuarioDto implements Serializable {
-
+public class UserDetailsDto {
     private Integer idUsuario;
-
-    @NotEmpty
     private String email;
     private String nombre;
     private String apellido;
-
-    @NotEmpty
     private String password;
     private Set<Rol> roles;
 
+    public UserDetailsDto(Integer idUsuario, String email, String nombre, String apellido, Set<Rol> roles) {
+    }
 }
