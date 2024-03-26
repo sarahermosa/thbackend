@@ -3,8 +3,6 @@ package com.roshka.thbackend.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.roshka.thbackend.model.dto.*;
 import com.roshka.thbackend.model.entity.*;
-import com.roshka.thbackend.service.*;
-import com.roshka.thbackend.service.ICiudadService;
 import com.roshka.thbackend.service.IPostulanteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,11 +24,6 @@ public class PostulanteController {
     @Autowired
     private IPostulanteService postulanteService;
 
-    @Autowired
-    private ICiudadService ciudadService;
-
-    @Autowired
-    private EstadoService estadoService;
 
     @PostMapping("postulante")
    public ResponseEntity<?> createPostulante(@RequestParam("postulante_info") String postulante,
@@ -51,8 +44,7 @@ public class PostulanteController {
             List<Estudio> estudiosList = mapper.readValue(estudios, mapper.getTypeFactory().constructCollectionType(List.class, Estudio.class));
             List<Long> tecnologiasListId = mapper.readValue(tecnologiasId, mapper.getTypeFactory().constructCollectionType(List.class, Long.class));
             List<ReferenciaPersonal> referenciaPersonalList = mapper.readValue(referencias, mapper.getTypeFactory().constructCollectionType(List.class, ReferenciaPersonal.class));
-            Optional<Ciudad> ciudad = ciudadService.findById(dto.getId_ciudad());
-            Optional<Estado> estado = Optional.ofNullable(estadoService.findById(dto.getId_estado()));
+
 
             dto.setFilesMultipart(incomingFiles);
             dto.setExperiencias(experienciasList);
@@ -69,30 +61,7 @@ public class PostulanteController {
 
 
         return ResponseEntity.ok().body("Guardado correctamente");
-//        Optional<Ciudad> ciudad = ciudadService.findById(postulante.getId_ciudad());
-//        Optional<Estado> estado = Optional.ofNullable(estadoService.findById(postulante.getId_estado()));
-//
-//
-//        if (ciudad.isPresent()) {
-//            postulante.setCiudad(ciudad.get());
-//        }
-//
-//        if (estado.isPresent()){
-//            postulante.setEstado(estado.get());
-//        }
 
-//        try {
-//            ObjectMapper mapper = new ObjectMapper();
-//            PostulanteDto dto = mapper.readValue(postulante, PostulanteDto.class);
-//
-//            dto.setFiles_cv(file);
-//            System.out.println("asdas");
-//            postulanteService.savePostulante(dto);
-//            return ResponseEntity.ok().body("Guardado correctamente");
-//        }catch (Exception e) {
-//                // Si ocurre un error, se devuelve un mensaje de error con el código de estado correspondiente
-//                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al guardar la entidad: " + e.getMessage());
-//            }
     }
 
     @GetMapping("postulante")
