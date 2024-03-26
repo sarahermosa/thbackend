@@ -7,7 +7,9 @@ import java.util.List;
 
 public interface ITecnologiaService {
     List<TecnologiaDto> listAll();
-    Tecnologia save(TecnologiaDto tecnologiaDto);
+    Tecnologia save(Tecnologia tecnologia);
+
+    void deleteAll();
 
     void delete(Long id);
 }

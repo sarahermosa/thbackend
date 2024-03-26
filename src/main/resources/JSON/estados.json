@@ -1,0 +1,10 @@
+[
+  { "estado": "Activo" },
+  { "estado": "Inactivo" },
+  { "estado": "Pendiente" },
+  { "estado": "En revision" },
+  { "estado": "Aprobado" },
+  { "estado": "Rechazado" }
+
+
+]

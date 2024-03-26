@@ -20,15 +20,12 @@ public class ReferenciaPersonal implements Serializable {
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "El campo no puede estar vacio")
     @Column (name = "nombre")
     private String nombre;
 
-    @NotBlank(message = "El campo no puede estar vacio")
     @Column (name = "relacion")
     private String relacion;
 
-    @NotBlank(message = "El campo no puede estar vacio")
     @Column (name = "telefono")
     private String telefono;
 

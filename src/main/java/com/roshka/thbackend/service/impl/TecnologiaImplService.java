@@ -24,10 +24,16 @@ public class TecnologiaImplService implements ITecnologiaService {
         return (List) tecnologiaDao.findAll();
     }
 
+
+
     @Override
-    public Tecnologia save(TecnologiaDto tecnologiaDto) {
-        Tecnologia tecnologia = modelMapper.map(tecnologiaDto, Tecnologia.class);
+    public Tecnologia save(Tecnologia tecnologia) {
         return tecnologiaDao.save(tecnologia);
+    }
+
+    @Override
+    public void deleteAll() {
+        tecnologiaDao.deleteAll();
     }
 
     @Override

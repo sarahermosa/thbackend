@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collections;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/thbackend/auth")
 public class AuthController {
 

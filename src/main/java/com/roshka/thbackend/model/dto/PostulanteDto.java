@@ -38,6 +38,7 @@ public class PostulanteDto {
     private  Convocatoria convocatoria;
 
     private List<File> files = new ArrayList<>();
+
     private Long id_ciudad;
     private Set<Tecnologia> tecnologiasasignadas;
     private List<Long> tecnologiasList;

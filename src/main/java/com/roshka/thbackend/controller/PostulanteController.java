@@ -5,9 +5,17 @@ import com.roshka.thbackend.model.dto.*;
 import com.roshka.thbackend.model.entity.*;
 import com.roshka.thbackend.service.IConvocatoriaService;
 import com.roshka.thbackend.service.IPostulanteService;
+import com.roshka.thbackend.model.dto.FileDto;
+import com.roshka.thbackend.model.dto.PostulanteDto;
+import com.roshka.thbackend.model.entity.*;
+import com.roshka.thbackend.model.payload.MensajeResponse;
+import com.roshka.thbackend.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +27,7 @@ import java.util.Optional;
 
 
 @RestController
+@CrossOrigin
 @RequestMapping("/thbackend/v1")
 public class PostulanteController {
 
@@ -29,6 +38,9 @@ public class PostulanteController {
     private IConvocatoriaService convocatoriaService;
 
 
+    @Autowired //INYECCION DE DEPENDENCIAS PARA EL EMAIL
+    private JavaMailSender javaMailSender;
+
     @PostMapping("postulante")
    public ResponseEntity<?> createPostulante(@RequestParam("postulante_info") String postulante,
                                              @RequestParam("files") MultipartFile[] files,
@@ -38,7 +50,6 @@ public class PostulanteController {
                                              @RequestParam("referencias_personales") String referencias,
                                              @RequestParam("convocatoria_id") String convocatoriaId)
                                              throws IOException {
-
 
         ObjectMapper mapper = new ObjectMapper();
         try{
@@ -61,6 +72,16 @@ public class PostulanteController {
 
 
             System.out.println(dto);
+
+            SimpleMailMessage email = new SimpleMailMessage();
+            email.setTo("ferledesma352@gmail.com");
+            email.setFrom("bootcampjava341@gmail.com");
+            email.setSubject("Incripcion Convocatoria");
+            email.setText("Hola!!" + dto.getNombre() + "Gracias por inscribirte a la convocatoria\n\nNO RESPONDER ESTE MENSAJE");
+
+            javaMailSender.send(email);
+
+
             postulanteService.savePostulante(dto);
         }catch (Exception e){
             System.out.println(e.getMessage());
@@ -145,8 +166,6 @@ public class PostulanteController {
     }
 
     }
-
-
 
 
 

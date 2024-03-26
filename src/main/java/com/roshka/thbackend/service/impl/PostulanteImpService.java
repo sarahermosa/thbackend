@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.*;
 
 @Service
 public class PostulanteImpService implements IPostulanteService {
@@ -86,13 +87,11 @@ public class PostulanteImpService implements IPostulanteService {
         assignCityToPostulante(postulante.getId_postulante(), PostulanteDto.getId_ciudad());
         assignEstadoToPostulante(postulante.getId_postulante(), PostulanteDto.getId_estado());
 
-        
+
 
         postulanteDao.save(postulante);
         System.out.println(postulante);
         return postulante;
-
-
 
     }
 

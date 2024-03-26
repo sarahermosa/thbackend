@@ -2,10 +2,13 @@ package com.roshka.thbackend.model.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.roshka.thbackend.model.entity.Postulante;
+import com.roshka.thbackend.model.entity.Convocatoria;
+import com.roshka.thbackend.model.entity.Estudio;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
