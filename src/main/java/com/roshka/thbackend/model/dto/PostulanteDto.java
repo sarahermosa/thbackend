@@ -32,6 +32,9 @@ public class PostulanteDto implements Serializable {
     private String fecha_creacion;
     private String fecha_contratado;
     private String nivel_ingles;
+    private String nro_documento;
+    private String tipo_documento;
+
     private List<MultipartFile> filesMultipart;
     private List<Experiencia> experiencias;
     private List<Estudio> estudios = new ArrayList<>();

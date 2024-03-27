@@ -10,6 +10,7 @@ import com.roshka.thbackend.model.dto.PostulanteDto;
 import com.roshka.thbackend.model.entity.*;
 import com.roshka.thbackend.model.payload.MensajeResponse;
 import com.roshka.thbackend.service.*;
+import com.roshka.thbackend.service.impl.PostulanteImpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,6 @@ public class PostulanteController {
 
     @Autowired
     private IConvocatoriaService convocatoriaService;
-
 
     @Autowired //INYECCION DE DEPENDENCIAS PARA EL EMAIL
     private JavaMailSender javaMailSender;
@@ -94,9 +94,35 @@ public class PostulanteController {
 
     }
 
+    @GetMapping("/postulantes?nombre={nombre}")
+    public List<Postulante> buscarPorNombre(@RequestParam String nombre) {
+        return postulanteService.buscarPorNombre(nombre);
+    }
 
+    @GetMapping("/postulantes?apellido={apellido}")
+    public List<Postulante> buscarPorApellido(@RequestParam String apellido) {
+        return postulanteService.buscarPorApellido(apellido);
+    }
 
+    @GetMapping("/estado/{idEstado}")
+    public ResponseEntity<List<Postulante>> buscarPorEstado(@PathVariable Long idEstado) {
+        List<Postulante> postulantes = postulanteService.buscarPorEstado(idEstado);
+        if (!postulantes.isEmpty()) {
+            return ResponseEntity.ok(postulantes);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
+    @GetMapping("/documento/{numeroDocumento}")
+    public ResponseEntity<Postulante> buscarPorNumeroDocumento(@PathVariable String numeroDocumento) {
+        Postulante postulante = postulanteService.buscarPorNumeroDocumento(numeroDocumento);
+        if (postulante != null) {
+            return ResponseEntity.ok(postulante);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
     @GetMapping("postulante")
     public ResponseEntity<?> listarPostulantes() {
         List<Postulante> postulantes = postulanteService.listAll();
