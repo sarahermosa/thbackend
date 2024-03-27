@@ -23,9 +23,9 @@ public interface IPostulanteService {
 
     List<Postulante> buscarPorNombre(String nombre);
 
-    Postulante buscarPorNumeroDocumento(String numeroDocumento);
-
+//    Postulante buscarPorNumeroDocumento(String numeroDocumento);
+//
     List<Postulante> buscarPorApellido(String apellido);
-
+//
     List<Postulante> buscarPorEstado(Long idEstado);
 }

@@ -94,35 +94,41 @@ public class PostulanteController {
 
     }
 
-    @GetMapping("/postulantes?nombre={nombre}")
-    public List<Postulante> buscarPorNombre(@RequestParam String nombre) {
-        return postulanteService.buscarPorNombre(nombre);
-    }
+//    @GetMapping("/postulantes?nombre={nombre}")
+//    public List<Postulante> buscarPorNombre(@PathVariable String nombre) {
+//        System.out.println(nombre);
+//        return postulanteService.buscarPorNombre(nombre);
+//    }
 
-    @GetMapping("/postulantes?apellido={apellido}")
-    public List<Postulante> buscarPorApellido(@RequestParam String apellido) {
-        return postulanteService.buscarPorApellido(apellido);
-    }
-
-    @GetMapping("/estado/{idEstado}")
-    public ResponseEntity<List<Postulante>> buscarPorEstado(@PathVariable Long idEstado) {
-        List<Postulante> postulantes = postulanteService.buscarPorEstado(idEstado);
-        if (!postulantes.isEmpty()) {
-            return ResponseEntity.ok(postulantes);
-        } else {
-            return ResponseEntity.notFound().build();
+    @GetMapping("/postulantes")
+    public List<Postulante> buscarPorNombre(@RequestParam(name = "nombre", required = false) String nombre,
+                                            @RequestParam(name = "apellido", required = false) String apellido,
+                                            @RequestParam(name = "estado", required = false) String estado) {
+        if (nombre != null) {
+            return postulanteService.buscarPorNombre(nombre);
+        } else if (apellido != null) {
+            return postulanteService.buscarPorApellido(apellido);
+        } else if (estado != null){
+            return postulanteService.buscarPorEstado(Long.parseLong(estado));
+        }
+        else {
+            // Handle case when neither nombre nor apellido is provided
+            throw new IllegalArgumentException("Debe proporcionar nombre, apellido o estado para la búsqueda.");
         }
     }
 
-    @GetMapping("/documento/{numeroDocumento}")
-    public ResponseEntity<Postulante> buscarPorNumeroDocumento(@PathVariable String numeroDocumento) {
-        Postulante postulante = postulanteService.buscarPorNumeroDocumento(numeroDocumento);
-        if (postulante != null) {
-            return ResponseEntity.ok(postulante);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
+    //
+
+//
+//    @GetMapping("/documento/{numeroDocumento}")
+//    public ResponseEntity<Postulante> buscarPorNumeroDocumento(@PathVariable String numeroDocumento) {
+//        Postulante postulante = postulanteService.buscarPorNumeroDocumento(numeroDocumento);
+//        if (postulante != null) {
+//            return ResponseEntity.ok(postulante);
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
     @GetMapping("postulante")
     public ResponseEntity<?> listarPostulantes() {
         List<Postulante> postulantes = postulanteService.listAll();
