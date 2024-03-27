@@ -28,7 +28,6 @@ public class FileImplService implements IFileService {
     public File save(FileDto fileDto) {
       File file = File.builder()
               .id_files(fileDto.getId_files())
-              .file_name(fileDto.getFile_name())
               .file_type(fileDto.getFile_type())
 //              .data(fileDto.getData())
               .build();

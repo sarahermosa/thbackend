@@ -45,13 +45,18 @@ public class EstadoController {
             // Convierte el JSON a objetos Java (por ejemplo, utilizando Jackson ObjectMapper)
             ObjectMapper objectMapper = new ObjectMapper();
             List<Estado> estados = objectMapper.readValue(json, new TypeReference<List<Estado>>() {});
+            List<Estado> estados2 = estadoService.listAll();
 
-            // Guarda los datos en la base de datos
-            for (Estado estado : estados) {
-                estadoService.guardar_estado(estado);
+            if (estados2.isEmpty()){
+                for (Estado estado : estados) {
+                    estadoService.guardar_estado(estado);
+                }
+                System.out.println("Datos cargados exitosamente desde el JSON.");
             }
 
-            System.out.println("Datos cargados exitosamente desde el JSON.");
+
+
+
 
         } catch (IOException e) {
             System.err.println("Error al cargar los datos desde el JSON: " + e.getMessage());

@@ -20,19 +20,16 @@ public class ReferenciaPersonal implements Serializable {
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "El campo no puede estar vacio")
     @Column (name = "nombre")
     private String nombre;
 
-    @NotBlank(message = "El campo no puede estar vacio")
     @Column (name = "relacion")
     private String relacion;
 
-    @NotBlank(message = "El campo no puede estar vacio")
     @Column (name = "telefono")
-    private Integer telefono;
+    private String telefono;
 
-    @ManyToOne(cascade = CascadeType.ALL, optional = false, targetEntity = Postulante.class)
-    @JoinColumn (name = "id_postulante")
-    private int id_postulante;
+//    @ManyToOne(cascade = CascadeType.ALL, optional = false, targetEntity = Postulante.class)
+//    @JoinColumn (name = "id_postulante")
+//    private int id_postulante;
 }

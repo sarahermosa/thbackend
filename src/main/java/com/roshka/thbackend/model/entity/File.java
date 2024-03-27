@@ -22,12 +22,7 @@ public class File implements Serializable {
     @Column(name="id_files")
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long id_files;
-    @Column(name="filename")
-    private String file_name;
-//    @Column(name="data")
-//    @Lob
-//    private byte[] data;
-    @Column(name="file_type")
+    private String linkToFile;
     private String file_type;
 
 

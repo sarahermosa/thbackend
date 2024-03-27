@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,7 +20,6 @@ public class Tecnologia {
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id_tecnologia;
 
-    @NotBlank (message = "El campo no puede estar vacio")
     @Column (name = "nombre")
     private String nombre;
 

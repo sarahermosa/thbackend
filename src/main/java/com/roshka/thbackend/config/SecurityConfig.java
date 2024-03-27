@@ -46,6 +46,9 @@ public class SecurityConfig {
                         authorize.requestMatchers(HttpMethod.GET, "/thbackend/**").permitAll()
                                 .requestMatchers("/thbackend/auth/**").permitAll()
                                 .requestMatchers("/thbackend/v1/**").permitAll()
+                                .requestMatchers("/images/**").permitAll()
+                                .requestMatchers("/cv/**").permitAll()
+
                                 .anyRequest().authenticated()
 
                 );
