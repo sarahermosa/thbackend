@@ -70,7 +70,7 @@ public class TecnologiaController {
         }
     }
 
-    @DeleteMapping("/tecnologia/delete/{id}")
+    @DeleteMapping("tecnologia/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         try{
         tecnologiaService.delete(id);
