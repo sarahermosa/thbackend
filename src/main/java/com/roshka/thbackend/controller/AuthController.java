@@ -4,7 +4,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import com.roshka.thbackend.model.dao.AllowedUsersDao;
 import jakarta.annotation.PostConstruct;
+import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +50,9 @@ public class AuthController {
     RolDao roleRepository;
 
     @Autowired
+    AllowedUsersDao allowedUsersRepository;
+
+    @Autowired
     PasswordEncoder encoder;
 
     @Autowired
@@ -74,55 +80,76 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpDto signUpRequest) {
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+
+
+        try {
+            if(allowedUsersRepository.existsByEmail(signUpRequest.getEmail())){
+                if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+                    return new ResponseEntity<>(
+                            MensajeResponse.builder()
+                                    .mensaje("Error: Email is already taken!")
+                                    .object(null)
+                                    .build()
+                            , HttpStatus.BAD_REQUEST);
+                }
+
+                // Create new user's account
+                Usuario user = new Usuario(signUpRequest.getNombre(), signUpRequest.getApellido(), signUpRequest.getEmail(),
+                        encoder.encode(signUpRequest.getPassword()));
+
+                Set<String> strRoles = signUpRequest.getRole();
+                Set<Rol> roles = new HashSet<>();
+
+                if (strRoles == null) {
+                    Rol userRole = roleRepository.findByDescripcion(ERole.ROLE_USER)
+                            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                    roles.add(userRole);
+                } else {
+                    strRoles.forEach(role -> {
+                        switch (role) {
+                            case "admin":
+                                Rol adminRole = roleRepository.findByDescripcion(ERole.ROLE_ADMIN)
+                                        .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                                roles.add(adminRole);
+
+                                break;
+                            default:
+                                Rol userRole = roleRepository.findByDescripcion(ERole.ROLE_USER)
+                                        .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                                roles.add(userRole);
+                        }
+                    });
+                }
+
+                user.setRoles(roles);
+                userRepository.save(user);
+
+                //RESPONDE CON EL CODIGO 201 Created
+
+                return new ResponseEntity<>(MensajeResponse.builder()
+                        .mensaje("User registered successfully!")
+                        .object(user.getEmail())
+                        .build()
+                        , HttpStatus.CREATED);
+            } else {
+                return new ResponseEntity<>(
+                        MensajeResponse.builder()
+                                .mensaje("Error: Usuario no permitido")
+                                .object(null)
+                                .build()
+                        , HttpStatus.UNAUTHORIZED);
+            }
+
+        } catch (DataAccessException exDt) {
             return new ResponseEntity<>(
                     MensajeResponse.builder()
-                            .mensaje("Error: Email is already token!")
+                            .mensaje(exDt.getMessage())
                             .object(null)
                             .build()
-                    , HttpStatus.BAD_REQUEST);
+                    , HttpStatus.METHOD_NOT_ALLOWED);
         }
 
-        // Create new user's account
-        Usuario user = new Usuario(signUpRequest.getNombre(), signUpRequest.getApellido(), signUpRequest.getEmail(),
-                encoder.encode(signUpRequest.getPassword()));
 
-        //insertar antes en la tabla de rol los datos (ROLE_ADMIN, ROLE_USER)
-
-        Set<String> strRoles = signUpRequest.getRole();
-        Set<Rol> roles = new HashSet<>();
-
-        if (strRoles == null) {
-            Rol userRole = roleRepository.findByDescripcion(ERole.ROLE_USER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-            roles.add(userRole);
-        } else {
-            strRoles.forEach(role -> {
-                switch (role) {
-                    case "admin":
-                        Rol adminRole = roleRepository.findByDescripcion(ERole.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(adminRole);
-
-                        break;
-                    default:
-                        Rol userRole = roleRepository.findByDescripcion(ERole.ROLE_USER)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(userRole);
-                }
-            });
-        }
-
-        user.setRoles(roles);
-        userRepository.save(user);
-
-        //RESPONDE CON EL CODIGO 201 Created
-
-        return new ResponseEntity<>(MensajeResponse.builder()
-                .mensaje("User registered successfully!")
-                .object(user.getEmail())
-                .build()
-                , HttpStatus.CREATED);
     }
 
     @Transactional
