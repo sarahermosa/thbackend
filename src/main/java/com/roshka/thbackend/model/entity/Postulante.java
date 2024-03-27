@@ -89,8 +89,8 @@ public class Postulante {
             inverseJoinColumns = @JoinColumn(name = "id_tecnologias", referencedColumnName = "id_tecnologia"))
     private Set<Tecnologia> tecnologiasasignadas = new HashSet<>();
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinTable(name = "id_convocatoria")
+//    @ManyToOne(cascade = CascadeType.ALL)
+//    @JoinTable(name = "id_convocatoria")
     private  Convocatoria convocatoria;
 
 

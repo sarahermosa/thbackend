@@ -43,9 +43,10 @@ public class TecnologiaController {
 
             // Convierte el JSON a objetos Java (por ejemplo, utilizando Jackson ObjectMapper)
             ObjectMapper objectMapper = new ObjectMapper();
-            List<Tecnologia> tecnologias = objectMapper.readValue(json, new TypeReference<List<Tecnologia>>() {});
+            List<Tecnologia> tecnologias = objectMapper.readValue(json, new TypeReference<List<Tecnologia>>() {
+            });
             List<TecnologiaDto> tecnologias2 = tecnologiaService.listAll();
-            if (tecnologias2.isEmpty()){
+            if (tecnologias2.isEmpty()) {
                 for (Tecnologia tecnologia : tecnologias) {
                     tecnologiaService.save(tecnologia);
                 }
@@ -55,4 +56,21 @@ public class TecnologiaController {
             System.err.println("Error al cargar los datos desde el JSON: " + e.getMessage());
         }
     }
+
+    @PostMapping("tecnologia/agregar")
+    public ResponseEntity<?> agregarTecnologia(@RequestBody TecnologiaDto tecnologiaDto) {
+        try {
+            System.out.println(tecnologiaDto.toString());
+            Tecnologia tecnologia = modelMapper.map(tecnologiaDto, Tecnologia.class);
+            tecnologia = tecnologiaService.save(tecnologia);
+            return ResponseEntity.status(HttpStatus.CREATED).body(tecnologia);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 }
+
+
+
+

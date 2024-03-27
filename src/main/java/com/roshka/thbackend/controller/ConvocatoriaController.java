@@ -12,6 +12,7 @@ import com.roshka.thbackend.model.entity.Postulante;
 import com.roshka.thbackend.model.payload.MensajeResponse;
 import com.roshka.thbackend.service.IConvocatoriaService;
 import com.roshka.thbackend.service.IFileService;
+import com.roshka.thbackend.service.IPostulanteService;
 import lombok.SneakyThrows;
 import org.modelmapper.Converter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,15 +41,22 @@ public class ConvocatoriaController {
     @Autowired
     private IConvocatoriaService convocatoriaService;
 
+    @Autowired
+    private IPostulanteService postulanteService;
+
     @PostMapping(value = "convocatoria")
-    public ResponseEntity<?> create(@RequestParam("convocatoriaDto") String convocatoriaDto,
-                                    @RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<?> create(@RequestParam("convocatoria_info") String convocatoriaDto,
+                                    @RequestParam("file") MultipartFile file,
+                                    @RequestParam("convocatorias_tecnologias_ids") String convocatorias_tecnologias_ids ) throws IOException {
 
     try{
         ObjectMapper mapper = new ObjectMapper();
-
+        List<Long> tecnologiasListId = mapper.readValue(convocatorias_tecnologias_ids, mapper.getTypeFactory().constructCollectionType(List.class, Long.class));
         ConvocatoriaDto dto = mapper.readValue(convocatoriaDto, ConvocatoriaDto.class);
+
+        dto.setTecnologias_ids(tecnologiasListId);
         dto.setFile(file);
+
         convocatoriaService.save(dto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }catch (Exception e)
@@ -72,11 +80,40 @@ public class ConvocatoriaController {
     }
 
     @GetMapping("convocatoria_postulantes/{id}")
-    public  Convocatoria listConvocatoriaPostulantes(@PathVariable Long id) throws Exception {
+    public  ResponseEntity<?> listConvocatoriaPostulantes(@PathVariable Long id) throws Exception {
+
+        try{
+
+
+        ConvocatoriaListaPostulanteDto output = new ConvocatoriaListaPostulanteDto();
         Convocatoria convocatoria = convocatoriaService.findById(id);
-        return convocatoria;
+        List<Postulante> filteredPostulantes = new ArrayList<>();
+        List<Postulante> lista_de_postulantes = postulanteService.listAll();
+        for(Postulante postulante : lista_de_postulantes){
+            if(postulante.getConvocatoria().getId_convocatoria().equals(convocatoria.getId_convocatoria())){
+
+                filteredPostulantes.add(postulante);
+                System.out.println("Convocatoria de postulante ");
+            }else{
+                System.out.println("No convocatoria");
+            }
+
+        }
+        output.setConvocatoria(convocatoria);
+        output.setPostulanteLista(filteredPostulantes);
+        System.out.println(output);
+
+        return ResponseEntity.ok().body(output);
+
+        }catch (Exception e)
+            {
+                System.out.println(e.getMessage());
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
     }
 
+
+//    @GetMapping("convocatoria_tecnologia/{id}")
 
 }
 

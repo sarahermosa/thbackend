@@ -61,6 +61,7 @@ public class PostulanteController {
             List<Long> tecnologiasListId = mapper.readValue(tecnologiasId, mapper.getTypeFactory().constructCollectionType(List.class, Long.class));
             List<ReferenciaPersonal> referenciaPersonalList = mapper.readValue(referencias, mapper.getTypeFactory().constructCollectionType(List.class, ReferenciaPersonal.class));
             Convocatoria convocatoria = convocatoriaService.findById(Long.parseLong(convocatoriaId));
+
             dto.setConvocatoria(convocatoria);
             dto.setFilesMultipart(incomingFiles);
             dto.setExperiencias(experienciasList);
@@ -73,13 +74,13 @@ public class PostulanteController {
 
             System.out.println(dto);
 
-            SimpleMailMessage email = new SimpleMailMessage();
-            email.setTo("ferledesma352@gmail.com");
-            email.setFrom("bootcampjava341@gmail.com");
-            email.setSubject("Incripcion Convocatoria");
-            email.setText("Hola!!" + dto.getNombre() + "Gracias por inscribirte a la convocatoria\n\nNO RESPONDER ESTE MENSAJE");
 
-            javaMailSender.send(email);
+//            SimpleMailMessage email = new SimpleMailMessage();
+//            email.setTo("ferledesma352@gmail.com");
+//            email.setFrom("bootcampjava341@gmail.com");
+//            email.setSubject("Incripcion Convocatoria");
+//            email.setText("Hola!! " + dto.getNombre() + " Gracias por inscribirte a la convocatoria\n\nNO RESPONDER ESTE MENSAJE");
+//            javaMailSender.send(email);
 
 
             postulanteService.savePostulante(dto);

@@ -1,9 +1,12 @@
 package com.roshka.thbackend.service.impl;
 
 import com.roshka.thbackend.model.dao.ConvocatoriaDao;
+import com.roshka.thbackend.model.dao.TecnologiaDao;
 import com.roshka.thbackend.model.dto.ConvocatoriaDto;
 import com.roshka.thbackend.model.dto.ConvocatoriaOutputDto;
 import com.roshka.thbackend.model.entity.Convocatoria;
+import com.roshka.thbackend.model.entity.Postulante;
+import com.roshka.thbackend.model.entity.Tecnologia;
 import com.roshka.thbackend.service.IConvocatoriaService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
@@ -20,9 +23,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
@@ -33,6 +34,9 @@ public class ConvocatoriaImplService implements IConvocatoriaService {
     private ConvocatoriaDao convocatoriaDao;
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private TecnologiaDao tecnologiaDao;
 
     @Autowired
     private HttpServletRequest request;
@@ -50,19 +54,16 @@ public class ConvocatoriaImplService implements IConvocatoriaService {
             output.setFecha_inicio(convocatoria.getFecha_inicio());
             output.setFecha_fin(convocatoria.getFecha_fin());
             output.setLink(convocatoria.getLink());
+            output.setFile_path(convocatoria.getImageData());
+            output.setTecnologias(convocatoria.getTecnologiasasignadas().stream().toList());
 
+//            String baseUrl = request.getRequestURL().toString().replace(request.getRequestURI(), "");
+//            String imageUrl = baseUrl + "/" + convocatoria.getImageData().replace("\\", "/"); // Replace backslashes with forward slashes
 
-            String baseUrl = request.getRequestURL().toString().replace(request.getRequestURI(), "");
-            String imageUrl = baseUrl + "/" + convocatoria.getImageData().replace("\\", "/"); // Replace backslashes with forward slashes
-
-            output.setFile_path(imageUrl);
+//            output.setFile_path(imageUrl);
             convocatoriasOut.add(output);
-
-
-
         }
         return convocatoriasOut;
-
     }
 
 
@@ -70,21 +71,20 @@ public class ConvocatoriaImplService implements IConvocatoriaService {
     @Transactional
     public Convocatoria save(ConvocatoriaDto convocatoriaDto) throws IOException {
 
-
+        System.out.println(convocatoriaDto);
         if(convocatoriaDto.getFile() != null && !convocatoriaDto.getFile().isEmpty()){
             InputStream fileInputStream = convocatoriaDto.getFile().getInputStream();
             String fileExtension = convocatoriaDto.getFile().getOriginalFilename().substring(convocatoriaDto.getFile().getOriginalFilename().lastIndexOf('.'));
 
             Path directoriImagenes =  Paths.get("images/" + DigestUtils.md5DigestAsHex(fileInputStream)+fileExtension);
-
             String rutaAbsoluta = directoriImagenes.toFile().getAbsolutePath();
+
             try {
                 byte[] bytesImg=convocatoriaDto.getFile().getBytes();
-
+                String baseUrl = request.getRequestURL().toString().replace(request.getRequestURI(), "");
                 Path rutaCompleta=Paths.get(rutaAbsoluta);
                 Files.write(rutaCompleta, bytesImg);
 
-//si todo salio bien guardamos la foto en la base de datos
 
                 Convocatoria convocatoria = Convocatoria.builder()
                         .title(convocatoriaDto.getTitle())
@@ -92,18 +92,24 @@ public class ConvocatoriaImplService implements IConvocatoriaService {
                         .fecha_inicio(convocatoriaDto.getFecha_inicio())
                         .fecha_fin(convocatoriaDto.getFecha_fin())
                         .link(convocatoriaDto.getLink())
-                        .imageData(directoriImagenes.toString())
+                        .imageData(baseUrl+"/"+directoriImagenes.toString().replace("\\", "/"))
+                        .tecnologiasasignadas(new HashSet<>())
                         .build();
+
                 convocatoriaDao.save(convocatoria);
 
-//                Convocatoria convocatoriaLinkUpdated = convocatoriaDao.findById(convocatoria.getId_convocatoria());
+                for (Long tecnologiaId : convocatoriaDto.getTecnologias_ids()) {
+                    assignTecnologiaToConvocatoria(convocatoria.getId_convocatoria(), tecnologiaId);
+                }
 
-//                convocatoriaLinkUpdated.
                 return convocatoriaDao.save(convocatoria);
+
+
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
+
         else{
             Convocatoria convocatoria = Convocatoria.builder()
                  .title(convocatoriaDto.getTitle())
@@ -168,6 +174,17 @@ public class ConvocatoriaImplService implements IConvocatoriaService {
         outputStream.close();
 
         return outputStream.toByteArray();
+    }
+
+    @Override
+    public Convocatoria assignTecnologiaToConvocatoria(Long convocatoriaId, Long tecnlogiaId) {
+
+        Tecnologia tecnologia = tecnologiaDao.findById(tecnlogiaId).get();
+        Convocatoria convocatoria = convocatoriaDao.findById(convocatoriaId).get();
+        Set<Tecnologia> tecnologiaSet = convocatoria.getTecnologiasasignadas();
+        tecnologiaSet.add(tecnologia);
+        convocatoria.setTecnologiasasignadas(tecnologiaSet);
+        return convocatoriaDao.save(convocatoria);
     }
 
 }

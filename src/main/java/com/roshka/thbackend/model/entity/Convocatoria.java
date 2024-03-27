@@ -8,9 +8,7 @@ import lombok.*;
 import org.hibernate.annotations.Type;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 @Data
@@ -42,7 +40,11 @@ public class Convocatoria implements Serializable {
     @Column(name = "imagedata")
     private String imageData;
 
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinTable(name = "convocatoria_tecnologias",
+            joinColumns = @JoinColumn(name = "id_convocatoria", referencedColumnName = "id_convocatoria"),
+            inverseJoinColumns = @JoinColumn(name = "id_tecnologias", referencedColumnName = "id_tecnologia"))
+    private Set<Tecnologia> tecnologiasasignadas = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Postulante> postulantes = new ArrayList<>();
+
 }
