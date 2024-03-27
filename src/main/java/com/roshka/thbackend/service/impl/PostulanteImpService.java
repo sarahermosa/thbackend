@@ -21,7 +21,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.*;
 
 @Service
 public class PostulanteImpService implements IPostulanteService {
@@ -160,6 +159,25 @@ public class PostulanteImpService implements IPostulanteService {
 
         postulante.setEstado(estado);
         return postulanteDao.save(postulante);
+    }
+
+    @Override
+    public List<Postulante> buscarPorNombre(String nombre) {
+        return postulanteDao.findByNombreContaining(nombre);
+    }
+
+    @Override
+    public Postulante buscarPorNumeroDocumento(String numeroDocumento) {
+        return postulanteDao.findByNumeroDocumento(numeroDocumento);
+    }
+
+    @Override
+    public List<Postulante> buscarPorApellido(String nombre) {
+        return postulanteDao.findByNombreContaining(nombre);
+    }
+
+    public List<Postulante> buscarPorEstado(Long idEstado) {
+        return postulanteDao.findByEstadoId(idEstado);
     }
 
 
