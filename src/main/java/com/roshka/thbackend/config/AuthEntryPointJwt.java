@@ -26,16 +26,22 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
             throws IOException, ServletException {
         logger.error("Unauthorized error: {}", authException.getMessage());
         String errorMessage = authException.getMessage();
+        Map<String, Object> errorResponse = new HashMap<>();
         if ("Bad credentials".equals(errorMessage)) {
-            Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("error", "Unauthorized");
             errorResponse.put("message", "Username or credentials invalid");
 
             response.setContentType("application/json");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write(new ObjectMapper().writeValueAsString(errorResponse));
+        } else if ("Full authentication is required to access this resource".equals(errorMessage)) {
+            errorResponse.put("error", "Unauthorized");
+            errorResponse.put("message", "Full authentication is required to access this resource");
+
+            response.setContentType("application/json");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write(new ObjectMapper().writeValueAsString(errorResponse));
         } else {
-            // Para otros errores, envía la respuesta predeterminada
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Error: Unauthorized");
         }
     }
