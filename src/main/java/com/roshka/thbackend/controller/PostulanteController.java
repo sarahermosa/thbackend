@@ -1,23 +1,27 @@
 package com.roshka.thbackend.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.roshka.thbackend.model.dto.*;
+import com.roshka.thbackend.model.entity.*;
+import com.roshka.thbackend.service.IConvocatoriaService;
+import com.roshka.thbackend.service.IPostulanteService;
 import com.roshka.thbackend.model.dto.FileDto;
 import com.roshka.thbackend.model.dto.PostulanteDto;
-import com.roshka.thbackend.model.entity.Ciudad;
-import com.roshka.thbackend.model.entity.Estado;
-import com.roshka.thbackend.model.entity.File;
-import com.roshka.thbackend.model.entity.Postulante;
+import com.roshka.thbackend.model.entity.*;
 import com.roshka.thbackend.model.payload.MensajeResponse;
-import com.roshka.thbackend.service.EstadoService;
-import com.roshka.thbackend.service.ICiudadService;
-import com.roshka.thbackend.service.IFileService;
-import com.roshka.thbackend.service.IPostulanteService;
+import com.roshka.thbackend.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,33 +35,67 @@ public class PostulanteController {
     private IPostulanteService postulanteService;
 
     @Autowired
-    private ICiudadService ciudadService;
+    private IConvocatoriaService convocatoriaService;
 
-    @Autowired
-    private EstadoService estadoService;
+
+    @Autowired //INYECCION DE DEPENDENCIAS PARA EL EMAIL
+    private JavaMailSender javaMailSender;
 
     @PostMapping("postulante")
-   public ResponseEntity<?> createPostulante(@RequestBody PostulanteDto postulante){
-        Optional<Ciudad> ciudad = ciudadService.findById(postulante.getId_ciudad());
-        Optional<Estado> estado = Optional.ofNullable(estadoService.findById(postulante.getId_estado()));
+   public ResponseEntity<?> createPostulante(@RequestParam("postulante_info") String postulante,
+                                             @RequestParam("files") MultipartFile[] files,
+                                             @RequestParam("experiencias") String experiencias,
+                                             @RequestParam("estudios") String estudios,
+                                             @RequestParam("tecnologias_id") String tecnologiasId,
+                                             @RequestParam("referencias_personales") String referencias,
+                                             @RequestParam("convocatoria_id") String convocatoriaId)
+                                             throws IOException {
+
+        ObjectMapper mapper = new ObjectMapper();
+        try{
+
+            PostulanteDto dto = mapper.readValue(postulante, PostulanteDto.class);
+            List<Experiencia> experienciasList = mapper.readValue(experiencias, mapper.getTypeFactory().constructCollectionType(List.class, Experiencia.class));
+            List<MultipartFile> incomingFiles = Arrays.asList(files);
+            List<Estudio> estudiosList = mapper.readValue(estudios, mapper.getTypeFactory().constructCollectionType(List.class, Estudio.class));
+            List<Long> tecnologiasListId = mapper.readValue(tecnologiasId, mapper.getTypeFactory().constructCollectionType(List.class, Long.class));
+            List<ReferenciaPersonal> referenciaPersonalList = mapper.readValue(referencias, mapper.getTypeFactory().constructCollectionType(List.class, ReferenciaPersonal.class));
+            Convocatoria convocatoria = convocatoriaService.findById(Long.parseLong(convocatoriaId));
+
+            dto.setConvocatoria(convocatoria);
+            dto.setFilesMultipart(incomingFiles);
+            dto.setExperiencias(experienciasList);
+            dto.setEstudios(estudiosList);
+            dto.setTecnologiasList(tecnologiasListId);
+            dto.setReferencia_personal(referenciaPersonalList);
 
 
-        if (ciudad.isPresent()) {
-            postulante.setCiudad(ciudad.get());
+
+
+            System.out.println(dto);
+
+
+//            SimpleMailMessage email = new SimpleMailMessage();
+//            email.setTo("ferledesma352@gmail.com");
+//            email.setFrom("bootcampjava341@gmail.com");
+//            email.setSubject("Incripcion Convocatoria");
+//            email.setText("Hola!! " + dto.getNombre() + " Gracias por inscribirte a la convocatoria\n\nNO RESPONDER ESTE MENSAJE");
+//            javaMailSender.send(email);
+
+
+            postulanteService.savePostulante(dto);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
 
-        if (estado.isPresent()){
-            postulante.setEstado(estado.get()
-            );
-        }
-        try {
-            postulanteService.savePostulante(postulante);
-            return ResponseEntity.ok().body("Guardado correctamente");
-        }catch (Exception e) {
-                // Si ocurre un error, se devuelve un mensaje de error con el código de estado correspondiente
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al guardar la entidad: " + e.getMessage());
-            }
+
+        return ResponseEntity.ok().body("Guardado correctamente");
+
     }
+
+
+
 
     @GetMapping("postulante")
     public ResponseEntity<?> listarPostulantes() {
@@ -83,18 +121,52 @@ public class PostulanteController {
     }
 
     @PutMapping("/postulante/{id}")
-    public ResponseEntity<String> updatePostulante(@PathVariable Long id, @RequestBody PostulanteDto postulanteDto) {
-        try {
-            Postulante updatedPostulante = postulanteService.updatePostulante(id, postulanteDto);
-            return ResponseEntity.status(HttpStatus.OK).body("Postulante actualizado correctamente");
-        } catch (Error ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-        } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al actualizar el postulante: " + ex.getMessage());
+    public ResponseEntity<String> updatePostulante(@PathVariable Long id,
+                                                   @RequestParam("postulante_info") String postulante,
+                                                   @RequestParam("files") MultipartFile[] files,
+                                                   @RequestParam("experiencias") String experiencias,
+                                                   @RequestParam("estudios") String estudios,
+                                                   @RequestParam("tecnologias_id") String tecnologiasId,
+                                                   @RequestParam("referencias_personales") String referencias) {
+//        try {
+//            Postulante updatedPostulante = postulanteService.updatePostulante(id, postulanteDto);
+//            return ResponseEntity.status(HttpStatus.OK).body("Postulante actualizado correctamente");
+//        } catch (Error ex) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+//        } catch (Exception ex) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al actualizar el postulante: " + ex.getMessage());
+//        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        try{
+
+            PostulanteDto dto = mapper.readValue(postulante, PostulanteDto.class);
+            List<Experiencia> experienciasList = mapper.readValue(experiencias, mapper.getTypeFactory().constructCollectionType(List.class, Experiencia.class));
+            List<MultipartFile> incomingFiles = Arrays.asList(files);
+            List<Estudio> estudiosList = mapper.readValue(estudios, mapper.getTypeFactory().constructCollectionType(List.class, Estudio.class));
+            List<Long> tecnologiasListId = mapper.readValue(tecnologiasId, mapper.getTypeFactory().constructCollectionType(List.class, Long.class));
+            List<ReferenciaPersonal> referenciaPersonalList = mapper.readValue(referencias, mapper.getTypeFactory().constructCollectionType(List.class, ReferenciaPersonal.class));
+
+
+            dto.setFilesMultipart(incomingFiles);
+            dto.setExperiencias(experienciasList);
+            dto.setEstudios(estudiosList);
+            dto.setTecnologiasList(tecnologiasListId);
+            dto.setReferencia_personal(referenciaPersonalList);
+
+
+            postulanteService.updatePostulante( id,dto);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+
+
+        return ResponseEntity.ok().body("Actualizado correctamente");
+
     }
 
-}
+    }
 
 
 

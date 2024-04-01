@@ -4,6 +4,7 @@ package com.roshka.thbackend.model.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import com.roshka.thbackend.model.entity.Convocatoria;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -66,14 +67,8 @@ public class Postulante {
     private List<File> files = new ArrayList<>();
 
 
-
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    @JoinTable(name = "postulantesitos_tecnologias",
-            joinColumns = @JoinColumn(name = "id_postulantes", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "id_tecnologias", referencedColumnName = "id_tecnologia"))
-    private Set<Tecnologia> tecnologiasasignadas = new HashSet<>();
-
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<ReferenciaPersonal> referencia_personal = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "id_ciudad")
@@ -88,5 +83,16 @@ public class Postulante {
     @ManyToOne
     @JoinColumn(name = "id_estado")
     private Estado estado;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinTable(name = "postulantes_tecnologias",
+            joinColumns = @JoinColumn(name = "id_postulantes", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "id_tecnologias", referencedColumnName = "id_tecnologia"))
+    private Set<Tecnologia> tecnologiasasignadas = new HashSet<>();
+
+//    @ManyToOne(cascade = CascadeType.ALL)
+//    @JoinTable(name = "id_convocatoria")
+    private Convocatoria convocatoria;
+
 
 }

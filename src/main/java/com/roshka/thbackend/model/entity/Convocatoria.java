@@ -8,7 +8,7 @@ import lombok.*;
 import org.hibernate.annotations.Type;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.util.*;
 
 
 @Data
@@ -28,17 +28,23 @@ public class Convocatoria implements Serializable {
     private String title;
     @Column(name = "descripcion")
     @NotEmpty
+    @Lob
     private String description;
     @Column(name = "fecha_inicio")
     private Date fecha_inicio;
     @Column(name = "fecha_fin")
     private Date fecha_fin;
     @Column(name = "link")
-    private String link;
+    private String link="convocatoria/"+id_convocatoria;
 
     @Column(name = "imagedata")
     private String imageData;
 
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinTable(name = "convocatoria_tecnologias",
+            joinColumns = @JoinColumn(name = "id_convocatoria", referencedColumnName = "id_convocatoria"),
+            inverseJoinColumns = @JoinColumn(name = "id_tecnologias", referencedColumnName = "id_tecnologia"))
+    private Set<Tecnologia> tecnologiasasignadas = new HashSet<>();
 
 
 }
