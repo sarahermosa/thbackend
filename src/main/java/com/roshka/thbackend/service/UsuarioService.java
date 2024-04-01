@@ -5,7 +5,6 @@ import com.roshka.thbackend.model.dto.UsuarioDto;
 import com.roshka.thbackend.model.entity.Usuario;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UsuarioService {
     List<Usuario> listAll();

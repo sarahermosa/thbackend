@@ -30,7 +30,6 @@ public class UsuarioImplService implements UsuarioService {
                 .nombre(usuarioDto.getNombre())
                 .apellido(usuarioDto.getApellido())
                 .password(usuarioDto.getPassword())
-                .resetPassword(usuarioDto.isResetPassword())
                 .roles(usuarioDto.getRoles())
                 .build();
         return usuarioDao.save(usuario);

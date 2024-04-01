@@ -1,9 +1,9 @@
 package com.roshka.thbackend.controller;
 
-import com.roshka.thbackend.model.dto.UsuarioDto;
-import com.roshka.thbackend.model.entity.Usuario;
+import com.roshka.thbackend.model.dto.AllowedUsersDto;
+import com.roshka.thbackend.model.entity.AllowedUsers;
 import com.roshka.thbackend.model.payload.MensajeResponse;
-import com.roshka.thbackend.service.UsuarioService;
+import com.roshka.thbackend.service.AllowedUsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -16,16 +16,16 @@ import java.util.List;
 @RestController
 @CrossOrigin
 @RequestMapping("/thbackend/v1")
-public class UsuarioController {
+public class AllowedUsersController {
 
     @Autowired
-    private UsuarioService usuarioService;
+    private AllowedUsersService allowedUsersService;
 
-    //Listar usuarios
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    @GetMapping("usuarios")
+    //Listar usuarios permitidos
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/allowedUsers")
     public ResponseEntity<?> showAll() {
-        List<Usuario> getList = usuarioService.listAll();
+        List<AllowedUsers> getList = allowedUsersService.listAll();
         if (getList == null) {
             return new ResponseEntity<>(
                     MensajeResponse.builder()
@@ -43,21 +43,18 @@ public class UsuarioController {
                 , HttpStatus.OK);
     }
 
-    //Crear usuario
-    @PostMapping("usuarios")
-    public ResponseEntity<?> create(@RequestBody UsuarioDto usuarioDto) {
-        Usuario usuarioSave = null;
+    //Crear usuario permitidos
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/allowedUsers")
+    public ResponseEntity<?> create(@RequestBody AllowedUsersDto allowedUsersDto) {
+        AllowedUsers usuarioSave = null;
         try {
-            usuarioSave = usuarioService.save(usuarioDto);
+            usuarioSave = allowedUsersService.save(allowedUsersDto);
             return new ResponseEntity<>(MensajeResponse.builder()
                     .mensaje("Guardado correctamente")
-                    .object(UsuarioDto.builder()
-                            .idUsuario(usuarioSave.getIdUsuario())
+                    .object(AllowedUsersDto.builder()
+                            .id_user(usuarioSave.getId_user())
                             .email(usuarioSave.getEmail())
-                            .nombre(usuarioSave.getNombre() )
-                            .apellido(usuarioSave.getApellido())
-                            .password(usuarioSave.getPassword())
-                            .roles(usuarioSave.getRoles())
                             .build())
                     .build()
                     , HttpStatus.CREATED);
@@ -71,23 +68,20 @@ public class UsuarioController {
         }
     }
 
-    //editar usuario
-    @PutMapping("usuario/{id}")
-    public ResponseEntity<?> update(@RequestBody UsuarioDto usuarioDto, @PathVariable Integer id) {
-        Usuario usuarioUpdate = null;
+    //editar usuario permitido
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("allowedUsers/{id}")
+    public ResponseEntity<?> update(@RequestBody AllowedUsersDto allowedUsersDto, @PathVariable Integer id) {
+        AllowedUsers usuarioUpdate = null;
         try {
-            if (usuarioService.existsById(id)) {
-                usuarioDto.setIdUsuario(id);
-                usuarioUpdate = usuarioService.save(usuarioDto);
+            if (allowedUsersService.existsById(id)) {
+                allowedUsersDto.setId_user(id);
+                usuarioUpdate = allowedUsersService.save(allowedUsersDto);
                 return new ResponseEntity<>(MensajeResponse.builder()
                         .mensaje("Guardado correctamente")
-                        .object(UsuarioDto.builder()
-                                .idUsuario(usuarioUpdate.getIdUsuario())
+                        .object(AllowedUsersDto.builder()
+                                .id_user(usuarioUpdate.getId_user())
                                 .email(usuarioUpdate.getEmail())
-                                .nombre(usuarioUpdate.getNombre())
-                                .apellido(usuarioUpdate.getApellido())
-                                .password(usuarioUpdate.getPassword())
-                                .roles(usuarioUpdate.getRoles())
                                 .build())
                         .build()
                         , HttpStatus.CREATED);
@@ -109,12 +103,13 @@ public class UsuarioController {
         }
     }
 
-    //eliminar usuario
-    @DeleteMapping("usuario/{id}")
+    //eliminar usuario permitido
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("allowedUsers/{id}")
     public ResponseEntity<?> delete(@PathVariable Integer id) {
         try {
-            Usuario usuarioDelete = usuarioService.findById(id);
-            usuarioService.delete(usuarioDelete);
+            AllowedUsers usuarioDelete = allowedUsersService.findById(id);
+            allowedUsersService.delete(usuarioDelete);
             return new ResponseEntity<>(usuarioDelete, HttpStatus.NO_CONTENT);
         } catch (DataAccessException exDt) {
             return new ResponseEntity<>(
@@ -127,9 +122,10 @@ public class UsuarioController {
     }
 
     //obtener usuario por ID
-    @GetMapping("usuario/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("allowedUsers/{id}")
     public ResponseEntity<?> showById(@PathVariable Integer id) {
-        Usuario usuario = usuarioService.findById(id);
+        AllowedUsers usuario = allowedUsersService.findById(id);
 
         if (usuario == null) {
             return new ResponseEntity<>(
@@ -143,13 +139,9 @@ public class UsuarioController {
         return new ResponseEntity<>(
                 MensajeResponse.builder()
                         .mensaje("")
-                        .object(UsuarioDto.builder()
-                                .idUsuario(usuario.getIdUsuario())
+                        .object(AllowedUsersDto.builder()
+                                .id_user(usuario.getId_user())
                                 .email(usuario.getEmail())
-                                .nombre(usuario.getNombre() )
-                                .apellido(usuario.getApellido())
-                                .password(usuario.getPassword())
-                                .roles(usuario.getRoles())
                                 .build())
                         .build()
                 , HttpStatus.OK);
