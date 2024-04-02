@@ -51,8 +51,6 @@ public class PostulanteImpService implements IPostulanteService {
     @Override
     @Transactional
     public Postulante savePostulante(PostulanteDto PostulanteDto) throws IOException {
-        System.out.println(PostulanteDto);
-        System.out.println(PostulanteDto.getReferencia_personal());
         Postulante postulante = modelMapper.map(PostulanteDto, Postulante.class);
         postulante.setTecnologiasasignadas(new HashSet<>());
         postulanteDao.save(postulante);
@@ -61,27 +59,31 @@ public class PostulanteImpService implements IPostulanteService {
             assignTecnologiaToPostulante(postulante.getId_postulante(), tecnologiaId);
         }
 
-        List<File> files = new ArrayList<>();
-        for ( MultipartFile file : PostulanteDto.getFilesMultipart()) {
-            InputStream fileInputStream = file.getInputStream();
-            String fileExtension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf('.'));
-            Path directoriImagenes =  Paths.get("cv/" + DigestUtils.md5DigestAsHex(fileInputStream)+fileExtension);
-            String rutaAbsoluta = directoriImagenes.toFile().getAbsolutePath();
-            try{
-                byte[] bytesImg=file.getBytes();
-                Path rutaCompleta=Paths.get(rutaAbsoluta);
-                Files.write(rutaCompleta, bytesImg);
-            }catch(IOException e){
-                System.out.println("Error al subir el archivo");
+        if(PostulanteDto.getFilesMultipart() != null) {
+            List<File> files = new ArrayList<>();
+            for (MultipartFile file : PostulanteDto.getFilesMultipart()) {
+                InputStream fileInputStream = file.getInputStream();
+                String fileExtension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf('.'));
+                Path directoriImagenes = Paths.get("cv/" + DigestUtils.md5DigestAsHex(fileInputStream) + fileExtension);
+                String rutaAbsoluta = directoriImagenes.toFile().getAbsolutePath();
+                try {
+                    byte[] bytesImg = file.getBytes();
+                    Path rutaCompleta = Paths.get(rutaAbsoluta);
+                    Files.write(rutaCompleta, bytesImg);
+                } catch (IOException e) {
+                    System.out.println("Error al subir el archivo");
+                }
+                File f = new File();
+                String baseUrl = request.getRequestURL().toString().replace(request.getRequestURI(), "");
+                String fileUrl = baseUrl + "/" + directoriImagenes.toString().replace("\\", "/");
+                f.setLinkToFile(fileUrl);
+                f.setFile_type(fileExtension);
+                files.add(f);
             }
-            File f = new File();
-            String baseUrl = request.getRequestURL().toString().replace(request.getRequestURI(), "");
-            String fileUrl = baseUrl+"/"+directoriImagenes.toString().replace("\\", "/");
-            f.setLinkToFile(fileUrl);
-            f.setFile_type(fileExtension);
-            files.add(f);
+            postulante.setFiles(files);
+        }else{
+            postulante.setFiles(new ArrayList<>());
         }
-        postulante.setFiles(files);
 
         assignCityToPostulante(postulante.getId_postulante(), PostulanteDto.getId_ciudad());
         assignEstadoToPostulante(postulante.getId_postulante(), PostulanteDto.getId_estado());
@@ -105,26 +107,55 @@ public class PostulanteImpService implements IPostulanteService {
     }
 
     @Override
-    public Postulante updatePostulante(Long id, PostulanteDto postulanteDto) {
+    @Transactional
+    public Postulante updatePostulante(Long id, PostulanteDto postulanteDto) throws IOException {
         Optional<Postulante> optionalPostulante = postulanteDao.findById(id);
 
         if (optionalPostulante.isPresent()) {
             Postulante postulante = optionalPostulante.get();
+            postulante = modelMapper.map(postulanteDto, Postulante.class);
+            postulanteDao.save(postulante);
 
-            postulante.setNombre(postulanteDto.getNombre());
-            postulante.setApellido(postulanteDto.getApellido());
-            postulante.setComentario_rrhh(postulanteDto.getComentario_rrhh());
-            postulante.setCorreo(postulanteDto.getCorreo());
-            postulante.setDireccion(postulanteDto.getDireccion());
-            postulante.setNro_telefono(postulanteDto.getNro_telefono());
-            postulante.setNacionalidad(postulanteDto.getNacionalidad());
-            postulante.setEstado_civil(postulanteDto.getEstado_civil());
-            postulante.setFecha_nacimiento(postulanteDto.getFecha_nacimiento());
-            postulante.setFecha_actualizacion(postulanteDto.getFecha_actualizacion());
-            postulante.setFecha_creacion(postulanteDto.getFecha_creacion());
-            postulante.setFecha_contratado(postulanteDto.getFecha_contratado());
-            postulante.setNivel_ingles(postulanteDto.getNivel_ingles());
-            return postulanteDao.save(postulante);
+            for (Long tecnologiaId : postulanteDto.getTecnologiasList()) {
+                assignTecnologiaToPostulante(postulante.getId_postulante(), tecnologiaId);
+            }
+
+            if(postulanteDto.getFilesMultipart() != null) {
+                List<File> files = new ArrayList<>();
+                for (MultipartFile file : postulanteDto.getFilesMultipart()) {
+                    InputStream fileInputStream = file.getInputStream();
+                    String fileExtension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf('.'));
+                    Path directoriImagenes = Paths.get("cv/" + DigestUtils.md5DigestAsHex(fileInputStream) + fileExtension);
+                    String rutaAbsoluta = directoriImagenes.toFile().getAbsolutePath();
+                    try {
+                        byte[] bytesImg = file.getBytes();
+                        Path rutaCompleta = Paths.get(rutaAbsoluta);
+                        Files.write(rutaCompleta, bytesImg);
+                    } catch (IOException e) {
+                        System.out.println("Error al subir el archivo");
+                    }
+                    File f = new File();
+                    String baseUrl = request.getRequestURL().toString().replace(request.getRequestURI(), "");
+                    String fileUrl = baseUrl + "/" + directoriImagenes.toString().replace("\\", "/");
+                    f.setLinkToFile(fileUrl);
+                    f.setFile_type(fileExtension);
+                    files.add(f);
+                }
+                postulante.setFiles(files);
+            }
+            else {
+                postulante.setFiles(new ArrayList<>());
+            }
+
+            assignCityToPostulante(postulante.getId_postulante(), postulanteDto.getId_ciudad());
+            assignEstadoToPostulante(postulante.getId_postulante(), postulanteDto.getId_estado());
+
+
+
+            postulanteDao.save(postulante);
+            System.out.println(postulante);
+            return postulante;
+
         } else {
             throw new RuntimeException("Error al actualizar el postulante. No se encontró el postulante con ID: " + id);
         }

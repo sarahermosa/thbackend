@@ -13,7 +13,7 @@ public interface IPostulanteService {
     Postulante findByID(Long id_postulante);
     public void deletePostulante(Long id);
 
-    Postulante updatePostulante(Long id, PostulanteDto postulanteDto);
+    Postulante updatePostulante(Long id, PostulanteDto postulanteDto) throws IOException;
 
     public Postulante assignTecnologiaToPostulante(Long postulateId, Long tecnlogiaId);
 
