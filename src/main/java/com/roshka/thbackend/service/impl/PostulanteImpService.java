@@ -113,7 +113,9 @@ public class PostulanteImpService implements IPostulanteService {
 
         if (optionalPostulante.isPresent()) {
             Postulante postulante = optionalPostulante.get();
-            postulante = modelMapper.map(postulanteDto, Postulante.class);
+            postulanteDto.setId_postulante(id);
+            modelMapper.map(postulanteDto, postulante);
+            postulante.setTecnologiasasignadas(new HashSet<>());
             postulanteDao.save(postulante);
 
             for (Long tecnologiaId : postulanteDto.getTecnologiasList()) {

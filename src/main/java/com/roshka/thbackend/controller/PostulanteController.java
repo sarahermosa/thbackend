@@ -160,15 +160,9 @@ public class PostulanteController {
                                                    @RequestParam("estudios") String estudios,
                                                    @RequestParam("tecnologias_id") String tecnologiasId,
                                                    @RequestParam("referencias_personales") String referencias) {
-//        try {
-//            Postulante updatedPostulante = postulanteService.updatePostulante(id, postulanteDto);
-//            return ResponseEntity.status(HttpStatus.OK).body("Postulante actualizado correctamente");
-//        } catch (Error ex) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-//        } catch (Exception ex) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al actualizar el postulante: " + ex.getMessage());
-//        }
 
+        System.out.println("update in process");
+        System.out.println(tecnologiasId);
         ObjectMapper mapper = new ObjectMapper();
         try{
 
@@ -188,6 +182,7 @@ public class PostulanteController {
 
 
             postulanteService.updatePostulante( id,dto);
+
         }catch (Exception e){
             System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
