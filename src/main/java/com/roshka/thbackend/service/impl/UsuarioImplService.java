@@ -8,7 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UsuarioImplService implements UsuarioService {
@@ -16,6 +20,8 @@ public class UsuarioImplService implements UsuarioService {
     @Autowired
     private UsuarioDao usuarioDao;
 
+    private static final long EXPIRE_TOKEN=1;
+    
     @Override
     public List<Usuario> listAll() {
         return (List) usuarioDao.findAll();
@@ -50,6 +56,62 @@ public class UsuarioImplService implements UsuarioService {
     @Override
     public boolean existsById(Integer id) {
         return usuarioDao.existsById(id);
+    }
+    
+    public String forgotPass(String email){
+        Optional<Usuario> userOptional = usuarioDao.findByEmail(email);
+
+        if(userOptional.isEmpty()){
+            return "Invalid email id.";
+        }
+
+        Usuario user=userOptional.get();
+        user.setToken(generateToken());
+        user.setTokenCreationDate(LocalDateTime.now());
+
+        user=usuarioDao.save(user);
+
+
+        return user.getToken();
+    }
+
+    public String resetPass(String token, String password){
+        Optional<Usuario> userOptional = usuarioDao.findByToken(token);
+
+        if(userOptional.isEmpty()){
+            return "Invalid token";
+        }
+        LocalDateTime tokenCreationDate = userOptional.get().getTokenCreationDate();
+
+        if (isTokenExpired(tokenCreationDate)) {
+            return "Token expired.";
+
+        }
+
+        Usuario user = userOptional.get();
+
+        user.setPassword(password);
+        user.setToken(null);
+        user.setTokenCreationDate(null);
+
+        usuarioDao.save(user);
+
+        return "Your password successfully updated.";
+    }
+
+    public String generateToken() {
+        StringBuilder token = new StringBuilder();
+
+        return token.append(UUID.randomUUID().toString())
+                .append(UUID.randomUUID().toString()).toString();
+    }
+
+    public boolean isTokenExpired(final LocalDateTime tokenCreationDate) {
+
+        LocalDateTime now = LocalDateTime.now();
+        Duration diff = Duration.between(tokenCreationDate, now);
+
+        return diff.toMinutes() >=EXPIRE_TOKEN;
     }
 
 }

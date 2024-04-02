@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
@@ -22,5 +23,7 @@ public class UsuarioDto implements Serializable {
     @NotEmpty
     private String password;
     private Set<Rol> roles;
+    private String token;
+    private LocalDateTime tokenCreationDate;
 
 }

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,7 +40,11 @@ public class Usuario implements Serializable {
     @JoinTable(name = "usuario_rol",
             joinColumns = @JoinColumn(name = "id_usuario"),
             inverseJoinColumns = @JoinColumn(name = "id_rol"))
-    private Set<Rol> roles = new HashSet<>();;
+    private Set<Rol> roles = new HashSet<>();
+
+    private String token;
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime tokenCreationDate;
 
     public Usuario(String nombre, String apellido, String email, String password) {
         this.nombre = nombre;

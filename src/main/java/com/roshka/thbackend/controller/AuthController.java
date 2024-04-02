@@ -6,6 +6,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.roshka.thbackend.model.dao.AllowedUsersDao;
+import com.roshka.thbackend.model.dto.ForgotPasswordDto;
+import com.roshka.thbackend.model.dto.ResetPasswordDto;
+import com.roshka.thbackend.service.UsuarioService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,11 +21,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.roshka.thbackend.model.entity.ERole;
 import com.roshka.thbackend.model.entity.Rol;
 import com.roshka.thbackend.model.entity.Usuario;
@@ -57,6 +56,9 @@ public class AuthController {
 
     @Autowired
     JwtUtils jwtUtils;
+
+    @Autowired
+    UsuarioService service;
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginDto loginRequest) {
@@ -148,8 +150,17 @@ public class AuthController {
                             .build()
                     , HttpStatus.METHOD_NOT_ALLOWED);
         }
+    }
 
+    @PostMapping("/forgot-password")
+    public String forgotPass(@RequestBody ForgotPasswordDto request){
 
+        return service.forgotPass(request.getEmail());
+    }
+
+    @PutMapping("/reset-password")
+    public String resetPass(@RequestBody ResetPasswordDto request){
+        return service.resetPass(request.getToken(),encoder.encode(request.getPassword()));
     }
 
     @Transactional
