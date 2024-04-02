@@ -1,8 +1,11 @@
 package com.roshka.thbackend.model.entity;
+
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -10,16 +13,15 @@ import java.io.Serializable;
 @ToString
 @Builder
 @Entity
-@Table(name = "rol")
-public class Rol implements Serializable {
+@Table(name = "allowed_users")
+public class AllowedUsers implements Serializable {
 
     @Id
-    @Column(name="id_rol")
+    @Column(name="id_user")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idRol;
+    private Integer id_user;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 20)
-    private ERole descripcion;
+    @Column(name="email")
+    private String email;
 
 }

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -33,14 +34,21 @@ public class Usuario implements Serializable {
     @Column(name="password")
     private String password;
 
-    @Column(name="reset_password")
-    private boolean resetPassword;
-
-   
     /** RELACIONES PARA LA BASE DE DATOS **/
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "usuario_rol",
             joinColumns = @JoinColumn(name = "id_usuario"),
             inverseJoinColumns = @JoinColumn(name = "id_rol"))
-    private Set<Rol> roles;
+    private Set<Rol> roles = new HashSet<>();;
+
+    public Usuario(String nombre, String apellido, String email, String password) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.email = email;
+        this.password = password;
+    }
+
+
+
+
 }
