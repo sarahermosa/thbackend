@@ -58,12 +58,8 @@ public class UsuarioImplService implements UsuarioService {
         return usuarioDao.existsById(id);
     }
     
-    public String forgotPass(String email){
+    public Usuario forgotPass(String email){
         Optional<Usuario> userOptional = usuarioDao.findByEmail(email);
-
-        if(userOptional.isEmpty()){
-            return "Invalid email id.";
-        }
 
         Usuario user=userOptional.get();
         user.setToken(generateToken());
@@ -72,21 +68,21 @@ public class UsuarioImplService implements UsuarioService {
         user=usuarioDao.save(user);
 
 
-        return user.getToken();
+        return user;
     }
 
-    public String resetPass(String token, String password){
-        Optional<Usuario> userOptional = usuarioDao.findByToken(token);
+    public String resetPass(Optional<Usuario> userOptional, String password){
+//        Optional<Usuario> userOptional = usuarioDao.findByToken(token);
 
-        if(userOptional.isEmpty()){
-            return "Invalid token";
-        }
-        LocalDateTime tokenCreationDate = userOptional.get().getTokenCreationDate();
-
-        if (isTokenExpired(tokenCreationDate)) {
-            return "Token expired.";
-
-        }
+//        if(userOptional.isEmpty()){
+//            return "Invalid token";
+//        }
+//        LocalDateTime tokenCreationDate = userOptional.get().getTokenCreationDate();
+//
+//        if (isTokenExpired(tokenCreationDate)) {
+//            return "Token expired.";
+//
+//        }
 
         Usuario user = userOptional.get();
 

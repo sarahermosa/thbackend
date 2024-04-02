@@ -2,14 +2,15 @@ package com.roshka.thbackend.controller;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.roshka.thbackend.model.dao.AllowedUsersDao;
-import com.roshka.thbackend.model.dto.ForgotPasswordDto;
-import com.roshka.thbackend.model.dto.ResetPasswordDto;
+import com.roshka.thbackend.model.dto.*;
 import com.roshka.thbackend.service.UsuarioService;
 import jakarta.annotation.PostConstruct;
+import org.json.JSONObject;
 import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.Valid;
@@ -25,8 +26,6 @@ import org.springframework.web.bind.annotation.*;
 import com.roshka.thbackend.model.entity.ERole;
 import com.roshka.thbackend.model.entity.Rol;
 import com.roshka.thbackend.model.entity.Usuario;
-import com.roshka.thbackend.model.dto.LoginDto;
-import com.roshka.thbackend.model.dto.SignUpDto;
 import com.roshka.thbackend.model.payload.JwtResponse;
 import com.roshka.thbackend.model.payload.MensajeResponse;
 import com.roshka.thbackend.model.dao.UsuarioDao;
@@ -153,14 +152,70 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
-    public String forgotPass(@RequestBody ForgotPasswordDto request){
+    public ResponseEntity<?>  forgotPass(@RequestBody ForgotPasswordDto request){
 
-        return service.forgotPass(request.getEmail());
+        try {
+            if (userRepository.existsByEmail(request.getEmail())) {
+                Usuario user = service.forgotPass(request.getEmail());
+                return new ResponseEntity<>(MensajeResponse.builder()
+                        .mensaje("Token generado")
+                        .object(user.getToken())
+                        .build()
+                        , HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(
+                        MensajeResponse.builder()
+                                .mensaje("El email no existe")
+                                .object(null)
+                                .build()
+                        , HttpStatus.NOT_FOUND);
+            }
+        } catch (DataAccessException exDt) {
+            return new ResponseEntity<>(
+                    MensajeResponse.builder()
+                            .mensaje(exDt.getMessage())
+                            .object(null)
+                            .build()
+                    , HttpStatus.METHOD_NOT_ALLOWED);
+        }
     }
 
     @PutMapping("/reset-password")
-    public String resetPass(@RequestBody ResetPasswordDto request){
-        return service.resetPass(request.getToken(),encoder.encode(request.getPassword()));
+    public ResponseEntity<?> resetPass(@RequestBody ResetPasswordDto request){
+
+        Optional<Usuario> userOptional = userRepository.findByToken(request.getToken());
+
+        try {
+            if (userOptional.isEmpty()) {
+                return new ResponseEntity<>(MensajeResponse.builder()
+                        .mensaje("Invalid token")
+                        .object(null)
+                        .build()
+                        , HttpStatus.NOT_FOUND);
+            } else if (service.isTokenExpired(userOptional.get().getTokenCreationDate())){
+                return new ResponseEntity<>(
+                        MensajeResponse.builder()
+                                .mensaje("Token expired")
+                                .object(null)
+                                .build()
+                        , HttpStatus.UNAUTHORIZED);
+            } else {
+                String response = service.resetPass(userOptional, encoder.encode(request.getPassword()));
+
+                return new ResponseEntity<>(MensajeResponse.builder()
+                        .mensaje(response)
+                        .object(userOptional.get().getEmail())
+                        .build()
+                        , HttpStatus.OK);
+            }
+        } catch (DataAccessException exDt) {
+            return new ResponseEntity<>(
+                    MensajeResponse.builder()
+                            .mensaje(exDt.getMessage())
+                            .object(null)
+                            .build()
+                    , HttpStatus.METHOD_NOT_ALLOWED);
+        }
     }
 
     @Transactional

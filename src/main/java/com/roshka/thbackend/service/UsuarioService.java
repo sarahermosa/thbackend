@@ -6,6 +6,7 @@ import com.roshka.thbackend.model.entity.Usuario;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface UsuarioService {
     List<Usuario> listAll();
@@ -18,9 +19,9 @@ public interface UsuarioService {
 
     boolean existsById(Integer id);
 
-    String forgotPass(String email);
+    Usuario forgotPass(String email);
 
-    String resetPass(String token, String password);
+    String resetPass(Optional<Usuario> userOptional, String password);
 
     String generateToken();
 
