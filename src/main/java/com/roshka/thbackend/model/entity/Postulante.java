@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.Set;
 @ToString
 @Builder
 @Entity
-public class Postulante {
+public class Postulante implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

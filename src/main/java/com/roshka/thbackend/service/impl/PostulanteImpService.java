@@ -163,22 +163,43 @@ public class PostulanteImpService implements IPostulanteService {
 
     @Override
     public List<Postulante> buscarPorNombre(String nombre) {
-        return postulanteDao.findByNombreContaining(nombre);
+        List<Postulante> postulantes =  (List) postulanteDao.findAll();
+        List<Postulante> resultado = new ArrayList<>();
+        for (Postulante postulante : postulantes) {
+            if (postulante.getNombre().contains(nombre)) {
+                resultado.add(postulante);
+            }
+        }
+        return resultado;
     }
-
+//
+//    @Override
+//    public Postulante buscarPorNumeroDocumento(String numeroDocumento) {
+//        return postulanteDao.findByNumeroDocumento(numeroDocumento);
+//    }
+//
     @Override
-    public Postulante buscarPorNumeroDocumento(String numeroDocumento) {
-        return postulanteDao.findByNumeroDocumento(numeroDocumento);
+    public List<Postulante> buscarPorApellido(String apellido) {
+        List<Postulante> postulantes =  (List) postulanteDao.findAll();
+        List<Postulante> resultado = new ArrayList<>();
+        for (Postulante postulante : postulantes) {
+            if (postulante.getApellido().contains(apellido)) {
+                resultado.add(postulante);
+            }
+        }
+        return resultado;
     }
-
-    @Override
-    public List<Postulante> buscarPorApellido(String nombre) {
-        return postulanteDao.findByNombreContaining(nombre);
-    }
-
+//
     public List<Postulante> buscarPorEstado(Long idEstado) {
-        return postulanteDao.findByEstadoId(idEstado);
+        List<Postulante> postulantes =  (List) postulanteDao.findAll();
+        List<Postulante> resultado = new ArrayList<>();
+        for (Postulante postulante : postulantes) {
+            if (Objects.equals(postulante.getEstado().id_estado, idEstado)) {
+                resultado.add(postulante);
+            }
+        }
+        return resultado;
     }
-
+//
 
 }
