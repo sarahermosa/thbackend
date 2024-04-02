@@ -37,21 +37,11 @@ public class RolesImplService implements RolService {
         return rolesDao.findById(id).orElse(null);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public Rol findByName(String descripcion) {
-        return rolesDao.findByDescripcion(descripcion);
-    }
-
     @Transactional
     @Override
     public void delete(Rol rol) {
         rolesDao.delete(rol);
     }
 
-    @Override
-    public boolean existsById(Integer id) {
-        return rolesDao.existsById(id);
-    }
 
 }
