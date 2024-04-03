@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BeneficioImplService implements IBeneficio {
@@ -44,6 +45,15 @@ public class BeneficioImplService implements IBeneficio {
     public void eliminar_beneficio(Beneficio beneficio) {
         beneficioDao.delete(beneficio);
     }
+
+    @Override
+    public List<String> obtenerNombresBeneficios() {
+        List<Beneficio> beneficios = beneficioDao.findAll();
+        return beneficios.stream()
+                .map(Beneficio::getTitulo)
+                .collect(Collectors.toList());
+    }
+
     @Override
     public Beneficio update(BeneficioDto beneficioDto) {
         try {

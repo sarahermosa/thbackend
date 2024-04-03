@@ -11,6 +11,8 @@ public interface IBeneficio {
     List<Beneficio> listAll();
     void eliminar_beneficio(Beneficio beneficio);
 
+    List<String> obtenerNombresBeneficios();
+
     Beneficio save(BeneficioDto beneficio);
     Beneficio update(BeneficioDto beneficioDto);
 }
