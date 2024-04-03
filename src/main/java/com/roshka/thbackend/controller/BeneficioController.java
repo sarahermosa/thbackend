@@ -55,6 +55,7 @@ public class BeneficioController {
         beneficio.setId(id);
         ibeneficio.eliminar_beneficio(beneficio);
         return ResponseEntity.noContent().build();
+        
     }
 }
 
