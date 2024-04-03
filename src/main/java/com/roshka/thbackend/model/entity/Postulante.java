@@ -4,6 +4,7 @@ package com.roshka.thbackend.model.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import com.roshka.thbackend.model.entity.Convocatoria;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -91,7 +92,7 @@ public class Postulante {
 
 //    @ManyToOne(cascade = CascadeType.ALL)
 //    @JoinTable(name = "id_convocatoria")
-    private  Convocatoria convocatoria;
+    private Convocatoria convocatoria;
 
 
 }
