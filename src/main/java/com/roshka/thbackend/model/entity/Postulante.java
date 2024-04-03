@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import com.roshka.thbackend.model.entity.Convocatoria;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.Set;
 @ToString
 @Builder
 @Entity
-public class Postulante {
+public class Postulante implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +29,11 @@ public class Postulante {
 
     @NotBlank
     private String apellido;
+
+    @Column(name = "nro_documento",unique = true)
+    private String nro_documento;
+
+    private String tipo_documento;
 
     @NotBlank
     private String comentario_rrhh;

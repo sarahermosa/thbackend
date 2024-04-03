@@ -69,6 +69,18 @@ public class TecnologiaController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+    @DeleteMapping("tecnologia/delete/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        try{
+        tecnologiaService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+        }catch (Exception e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+    }
 }
 
 

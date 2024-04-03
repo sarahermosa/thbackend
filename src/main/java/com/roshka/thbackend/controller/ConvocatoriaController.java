@@ -9,6 +9,7 @@ import com.roshka.thbackend.model.dto.FileDto;
 import com.roshka.thbackend.model.entity.Convocatoria;
 import com.roshka.thbackend.model.entity.File;
 import com.roshka.thbackend.model.entity.Postulante;
+import com.roshka.thbackend.model.entity.Tecnologia;
 import com.roshka.thbackend.model.payload.MensajeResponse;
 import com.roshka.thbackend.service.IConvocatoriaService;
 import com.roshka.thbackend.service.IFileService;
@@ -113,7 +114,25 @@ public class ConvocatoriaController {
     }
 
 
-//    @GetMapping("convocatoria_tecnologia/{id}")
+    @GetMapping("convocatoria_tecnologia/{id}")
+    public  ResponseEntity<?> listConvocatoriaTecnologia(@PathVariable Long id) throws Exception {
+        try{
+        List<ConvocatoriaOutputDto> output = new ArrayList<>();
+        List<ConvocatoriaOutputDto> lista_de_convocatorias = convocatoriaService.listAll();
+
+            lista_de_convocatorias.stream()
+                    .filter(convocatoria -> convocatoria.getTecnologias().stream()
+                            .anyMatch(tecnologia -> tecnologia.getId_tecnologia() == id))
+                    .forEach(output::add);
+
+            return ResponseEntity.ok().body(output);
+
+        }catch (Exception e)
+            {
+                System.out.println(e.getMessage());
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+    }
 
 }
 

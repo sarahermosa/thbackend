@@ -10,6 +10,7 @@ import com.roshka.thbackend.model.dto.PostulanteDto;
 import com.roshka.thbackend.model.entity.*;
 import com.roshka.thbackend.model.payload.MensajeResponse;
 import com.roshka.thbackend.service.*;
+import com.roshka.thbackend.service.impl.PostulanteImpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,6 @@ public class PostulanteController {
 
     @Autowired
     private IConvocatoriaService convocatoriaService;
-
 
     @Autowired //INYECCION DE DEPENDENCIAS PARA EL EMAIL
     private JavaMailSender javaMailSender;
@@ -75,12 +75,12 @@ public class PostulanteController {
             System.out.println(dto);
 
 
-//            SimpleMailMessage email = new SimpleMailMessage();
-//            email.setTo("ferledesma352@gmail.com");
-//            email.setFrom("bootcampjava341@gmail.com");
-//            email.setSubject("Incripcion Convocatoria");
-//            email.setText("Hola!! " + dto.getNombre() + " Gracias por inscribirte a la convocatoria\n\nNO RESPONDER ESTE MENSAJE");
-//            javaMailSender.send(email);
+            SimpleMailMessage email = new SimpleMailMessage();
+            email.setTo(dto.getCorreo());
+            email.setFrom("bootcampjava341@gmail.com");
+            email.setSubject("Incripcion Convocatoria");
+            email.setText("Hola!! " + dto.getNombre() + " Gracias por inscribirte a la convocatoria\n\nNO RESPONDER ESTE MENSAJE");
+            javaMailSender.send(email);
 
 
             postulanteService.savePostulante(dto);
@@ -94,9 +94,41 @@ public class PostulanteController {
 
     }
 
+//    @GetMapping("/postulantes?nombre={nombre}")
+//    public List<Postulante> buscarPorNombre(@PathVariable String nombre) {
+//        System.out.println(nombre);
+//        return postulanteService.buscarPorNombre(nombre);
+//    }
 
+    @GetMapping("/postulantes")
+    public List<Postulante> buscarPorNombre(@RequestParam(name = "nombre", required = false) String nombre,
+                                            @RequestParam(name = "apellido", required = false) String apellido,
+                                            @RequestParam(name = "estado", required = false) String estado) {
+        if (nombre != null) {
+            return postulanteService.buscarPorNombre(nombre);
+        } else if (apellido != null) {
+            return postulanteService.buscarPorApellido(apellido);
+        } else if (estado != null){
+            return postulanteService.buscarPorEstado(Long.parseLong(estado));
+        }
+        else {
+            // Handle case when neither nombre nor apellido is provided
+            throw new IllegalArgumentException("Debe proporcionar nombre, apellido o estado para la búsqueda.");
+        }
+    }
 
+    //
 
+//
+//    @GetMapping("/documento/{numeroDocumento}")
+//    public ResponseEntity<Postulante> buscarPorNumeroDocumento(@PathVariable String numeroDocumento) {
+//        Postulante postulante = postulanteService.buscarPorNumeroDocumento(numeroDocumento);
+//        if (postulante != null) {
+//            return ResponseEntity.ok(postulante);
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
     @GetMapping("postulante")
     public ResponseEntity<?> listarPostulantes() {
         List<Postulante> postulantes = postulanteService.listAll();
@@ -129,7 +161,7 @@ public class PostulanteController {
                                                    @RequestParam("tecnologias_id") String tecnologiasId,
                                                    @RequestParam("referencias_personales") String referencias) {
 //        try {
-//            Postulante updatedPostulante = postulanteService.updatePostulante(id, postulanteDto);
+//            Postulante updatedPostulante = postulanteService.updatePostulante(id,postulante);
 //            return ResponseEntity.status(HttpStatus.OK).body("Postulante actualizado correctamente");
 //        } catch (Error ex) {
 //            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
@@ -137,6 +169,8 @@ public class PostulanteController {
 //            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al actualizar el postulante: " + ex.getMessage());
 //        }
 
+        System.out.println("update in process");
+        System.out.println(tecnologiasId);
         ObjectMapper mapper = new ObjectMapper();
         try{
 
@@ -156,6 +190,7 @@ public class PostulanteController {
 
 
             postulanteService.updatePostulante( id,dto);
+
         }catch (Exception e){
             System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

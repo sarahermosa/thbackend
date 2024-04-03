@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,7 +15,7 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name = "tecnologia")
-public class Tecnologia {
+public class Tecnologia implements Serializable {
     @Id
     @Column (name = "id_tecnologia")
     @GeneratedValue (strategy = GenerationType.IDENTITY)
