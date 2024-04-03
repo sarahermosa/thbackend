@@ -11,20 +11,22 @@ import com.roshka.thbackend.model.entity.*;
 import com.roshka.thbackend.model.payload.MensajeResponse;
 import com.roshka.thbackend.service.*;
 import com.roshka.thbackend.service.impl.PostulanteImpService;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 
 @RestController
@@ -70,14 +72,30 @@ public class PostulanteController {
             dto.setReferencia_personal(referenciaPersonalList);
 
 
+
+
             System.out.println(dto);
 
-            SimpleMailMessage email = new SimpleMailMessage();
+
+//            SimpleMailMessage email = new SimpleMailMessage();
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper email = new MimeMessageHelper(message, true);
+
             email.setTo(dto.getCorreo());
             email.setFrom("bootcampjava341@gmail.com");
-            email.setSubject("Incripcion Convocatoria");
-            email.setText("Hola!! " + dto.getNombre() + " Gracias por inscribirte a la convocatoria\n\nNO RESPONDER ESTE MENSAJE");
-            javaMailSender.send(email);
+            email.setSubject("Inscripción Convocatoria");
+
+            String htmlFilePath = "src/main/resources/templates/email-template.html";
+            String logoUrl = "https://i.postimg.cc/rpYs8GHX/roshka-logo-white.png"; // Replace with the actual URL of your image
+
+            String htmlContent = new String(Files.readAllBytes(Paths.get(htmlFilePath)));
+            htmlContent = htmlContent.replace("{nombre}", dto.getNombre());
+            htmlContent = htmlContent.replace("{nombreconvocatoria}", dto.getConvocatoria().getTitle());
+            htmlContent = htmlContent.replace("{logo}", logoUrl);
+
+            email.setText(htmlContent, true);
+            javaMailSender.send(message);
+
 
 
             postulanteService.savePostulante(dto);

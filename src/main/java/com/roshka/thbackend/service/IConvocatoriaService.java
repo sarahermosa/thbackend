@@ -18,6 +18,8 @@ public interface IConvocatoriaService {
     Convocatoria findById(Long id);
 
     public Convocatoria assignTecnologiaToConvocatoria(Long convocatoriaId, Long tecnlogiaId);
+
+    Convocatoria updateConvocatoria(Long id, ConvocatoriaDto convocatoriaDto) throws IOException;
     void delete(Long id);
 
 }

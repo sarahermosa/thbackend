@@ -5,6 +5,7 @@ import com.roshka.thbackend.model.dao.TecnologiaDao;
 import com.roshka.thbackend.model.dto.ConvocatoriaDto;
 import com.roshka.thbackend.model.dto.ConvocatoriaOutputDto;
 import com.roshka.thbackend.model.entity.Convocatoria;
+import com.roshka.thbackend.model.entity.File;
 import com.roshka.thbackend.model.entity.Postulante;
 import com.roshka.thbackend.model.entity.Tecnologia;
 import com.roshka.thbackend.service.IConvocatoriaService;
@@ -43,7 +44,7 @@ public class ConvocatoriaImplService implements IConvocatoriaService {
 
     @Override
     public List<ConvocatoriaOutputDto> listAll() throws DataFormatException, IOException {
-        List<Convocatoria> convocatorias =  (List) convocatoriaDao.findAll();
+        List<Convocatoria> convocatorias = (List) convocatoriaDao.findAll();
         List<ConvocatoriaOutputDto> convocatoriasOut = new ArrayList<ConvocatoriaOutputDto>();
 
         for (Convocatoria convocatoria : convocatorias) {
@@ -72,17 +73,17 @@ public class ConvocatoriaImplService implements IConvocatoriaService {
     public Convocatoria save(ConvocatoriaDto convocatoriaDto) throws IOException {
 
         System.out.println(convocatoriaDto);
-        if(convocatoriaDto.getFile() != null && !convocatoriaDto.getFile().isEmpty()){
+        if (convocatoriaDto.getFile() != null && !convocatoriaDto.getFile().isEmpty()) {
             InputStream fileInputStream = convocatoriaDto.getFile().getInputStream();
             String fileExtension = convocatoriaDto.getFile().getOriginalFilename().substring(convocatoriaDto.getFile().getOriginalFilename().lastIndexOf('.'));
 
-            Path directoriImagenes =  Paths.get("images/" + DigestUtils.md5DigestAsHex(fileInputStream)+fileExtension);
+            Path directoriImagenes = Paths.get("images/" + DigestUtils.md5DigestAsHex(fileInputStream) + fileExtension);
             String rutaAbsoluta = directoriImagenes.toFile().getAbsolutePath();
 
             try {
-                byte[] bytesImg=convocatoriaDto.getFile().getBytes();
+                byte[] bytesImg = convocatoriaDto.getFile().getBytes();
                 String baseUrl = request.getRequestURL().toString().replace(request.getRequestURI(), "");
-                Path rutaCompleta=Paths.get(rutaAbsoluta);
+                Path rutaCompleta = Paths.get(rutaAbsoluta);
                 Files.write(rutaCompleta, bytesImg);
 
 
@@ -92,7 +93,7 @@ public class ConvocatoriaImplService implements IConvocatoriaService {
                         .fecha_inicio(convocatoriaDto.getFecha_inicio())
                         .fecha_fin(convocatoriaDto.getFecha_fin())
                         .link(convocatoriaDto.getLink())
-                        .imageData(baseUrl+"/"+directoriImagenes.toString().replace("\\", "/"))
+                        .imageData(baseUrl + "/" + directoriImagenes.toString().replace("\\", "/"))
                         .tecnologiasasignadas(new HashSet<>())
                         .build();
 
@@ -108,16 +109,14 @@ public class ConvocatoriaImplService implements IConvocatoriaService {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        }
-
-        else{
+        } else {
             Convocatoria convocatoria = Convocatoria.builder()
-                 .title(convocatoriaDto.getTitle())
-                 .description(convocatoriaDto.getDescription())
-                 .fecha_inicio(convocatoriaDto.getFecha_inicio())
-                 .fecha_fin(convocatoriaDto.getFecha_fin())
-                 .link(convocatoriaDto.getLink())
-                 .build();
+                    .title(convocatoriaDto.getTitle())
+                    .description(convocatoriaDto.getDescription())
+                    .fecha_inicio(convocatoriaDto.getFecha_inicio())
+                    .fecha_fin(convocatoriaDto.getFecha_fin())
+                    .link(convocatoriaDto.getLink())
+                    .build();
             return convocatoriaDao.save(convocatoria);
         }
 
@@ -136,12 +135,9 @@ public class ConvocatoriaImplService implements IConvocatoriaService {
     }
 
 
-
-
-
-
     //utils
     public static final int BITE_SIZE = 4 * 1024;
+
     public static byte[] compressImage(byte[] data) throws IOException {
         Deflater deflater = new Deflater();
         deflater.setLevel(Deflater.BEST_COMPRESSION);
@@ -150,9 +146,9 @@ public class ConvocatoriaImplService implements IConvocatoriaService {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
         byte[] tmp = new byte[BITE_SIZE];
 
-        while(!deflater.finished()) {
+        while (!deflater.finished()) {
             int size = deflater.deflate(tmp);
-            outputStream.write(tmp,0, size);
+            outputStream.write(tmp, 0, size);
         }
 
         outputStream.close();
@@ -187,4 +183,40 @@ public class ConvocatoriaImplService implements IConvocatoriaService {
         return convocatoriaDao.save(convocatoria);
     }
 
+    @Override
+    public Convocatoria updateConvocatoria(Long id, ConvocatoriaDto convocatoriaDto) throws IOException {
+
+        Optional<Convocatoria> optionalConvocatoria = convocatoriaDao.findById(id);
+        if (optionalConvocatoria.isPresent()) {
+            Convocatoria convocatoria = optionalConvocatoria.get();
+            convocatoriaDto.setId_convocatoria(id);
+            modelMapper.map(convocatoriaDto, convocatoria);
+            convocatoria.setImageData(null);
+            convocatoria.setTecnologiasasignadas(new HashSet<>());
+            convocatoriaDao.save(convocatoria);
+
+            for (Long tecnologiaId : convocatoriaDto.getTecnologias_ids()) {
+                assignTecnologiaToConvocatoria(convocatoria.getId_convocatoria(), tecnologiaId);
+            }
+
+            if (convocatoriaDto.getFile() != null && !convocatoriaDto.getFile().isEmpty()) {
+                InputStream fileInputStream = convocatoriaDto.getFile().getInputStream();
+                String baseUrl = request.getRequestURL().toString().replace(request.getRequestURI(), "");
+                String fileExtension = convocatoriaDto.getFile().getOriginalFilename().substring(convocatoriaDto.getFile().getOriginalFilename().lastIndexOf('.'));
+                Path directoriImagenes = Paths.get("images/" + DigestUtils.md5DigestAsHex(fileInputStream) + fileExtension);
+                convocatoria.setImageData(baseUrl + "/" + directoriImagenes.toString().replace("\\", "/"));
+
+            } else {
+                convocatoria.setImageData(null);
+                return convocatoriaDao.save(convocatoria);
+            }
+
+            convocatoriaDao.save(convocatoria);
+            return convocatoria;
+        }
+        else {
+            throw new RuntimeException("Error al actualizar la convocatoria. No se encontró el postulante con ID: " + id);
+        }
+
+    }
 }

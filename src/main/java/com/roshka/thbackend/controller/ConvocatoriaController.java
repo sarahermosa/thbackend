@@ -134,6 +134,34 @@ public class ConvocatoriaController {
             }
     }
 
+
+
+
+    @PutMapping("convocatoria/update/{id}")
+    public  ResponseEntity<?> update(@PathVariable("id") Long id, @RequestParam("convocatoria_info") String convocatoriaDto,
+                                    @RequestParam("file") MultipartFile file,
+                                    @RequestParam("convocatorias_tecnologias_ids") String convocatorias_tecnologias_ids ) throws IOException {
+
+            try{
+                ObjectMapper mapper = new ObjectMapper();
+                List<Long> tecnologiasListId = mapper.readValue(convocatorias_tecnologias_ids, mapper.getTypeFactory().constructCollectionType(List.class, Long.class));
+                ConvocatoriaDto dto = mapper.readValue(convocatoriaDto, ConvocatoriaDto.class);
+
+                dto.setTecnologias_ids(tecnologiasListId);
+                dto.setFile(file);
+
+                convocatoriaService.updateConvocatoria(id,dto);
+                return new ResponseEntity<>(HttpStatus.CREATED);
+            }catch (Exception e)
+            {
+                System.out.println(e.getMessage());
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+
+        }
+
+
+
 }
 
 
