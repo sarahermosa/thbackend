@@ -20,7 +20,7 @@ public class UsuarioImplService implements UsuarioService {
     @Autowired
     private UsuarioDao usuarioDao;
 
-    private static final long EXPIRE_TOKEN=1;
+    private static final long EXPIRE_TOKEN=2;
     
     @Override
     public List<Usuario> listAll() {
@@ -72,17 +72,6 @@ public class UsuarioImplService implements UsuarioService {
     }
 
     public String resetPass(Optional<Usuario> userOptional, String password){
-//        Optional<Usuario> userOptional = usuarioDao.findByToken(token);
-
-//        if(userOptional.isEmpty()){
-//            return "Invalid token";
-//        }
-//        LocalDateTime tokenCreationDate = userOptional.get().getTokenCreationDate();
-//
-//        if (isTokenExpired(tokenCreationDate)) {
-//            return "Token expired.";
-//
-//        }
 
         Usuario user = userOptional.get();
 
