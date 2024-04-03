@@ -12,6 +12,8 @@ import com.roshka.thbackend.service.UsuarioService;
 import jakarta.annotation.PostConstruct;
 import org.json.JSONObject;
 import org.springframework.dao.DataAccessException;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +61,9 @@ public class AuthController {
     @Autowired
     UsuarioService service;
 
+    @Autowired //INYECCION DE DEPENDENCIAS PARA EL EMAIL
+    private JavaMailSender javaMailSender;
+
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginDto loginRequest) {
 
@@ -88,7 +93,7 @@ public class AuthController {
                 if (userRepository.existsByEmail(signUpRequest.getEmail())) {
                     return new ResponseEntity<>(
                             MensajeResponse.builder()
-                                    .mensaje("Error: Email is already taken!")
+                                    .mensaje("Error: El email ya esta registrado!")
                                     .object(null)
                                     .build()
                             , HttpStatus.BAD_REQUEST);
@@ -158,9 +163,24 @@ public class AuthController {
         try {
             if (userRepository.existsByEmail(request.getEmail())) {
                 Usuario user = service.forgotPass(request.getEmail());
+
+                SimpleMailMessage email = new SimpleMailMessage();
+                email.setTo(request.getEmail());
+                email.setFrom("bootcampjava341@gmail.com");
+                email.setSubject("Recuperar Contraseña");
+                email.setText("Hola, " + user.getNombre() +
+                        "\n\n" +
+                        "¡Hubo una solicitud para cambiar su contraseña!" +
+                        "\n" +
+                        "Si no realizó esta solicitud, ignore este correo electrónico." +
+                        "\n" +
+                        "De lo contrario, haga clic en este enlace para cambiar su contraseña:\n\nhttp://localhost:5173/confirm-reset?token="+user.getToken());
+                javaMailSender.send(email);
+
+
                 return new ResponseEntity<>(MensajeResponse.builder()
                         .mensaje("Token generado")
-                        .object(user.getToken())
+                        .object(user.getTokenCreationDate())
                         .build()
                         , HttpStatus.OK);
             } else {

@@ -70,10 +70,7 @@ public class PostulanteController {
             dto.setReferencia_personal(referenciaPersonalList);
 
 
-
-
             System.out.println(dto);
-
 
             SimpleMailMessage email = new SimpleMailMessage();
             email.setTo(dto.getCorreo());
