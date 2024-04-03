@@ -62,7 +62,9 @@ public class WebSecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/thbackend/auth/**").permitAll()
+                        auth.requestMatchers("/thbackend/auth/signin","/thbackend/auth/signup", "/thbackend/auth/forgot-password",
+                                            "/thbackend/auth/reset-password").permitAll()
+                                .requestMatchers(antMatcher(HttpMethod.PUT, "/thbackend/auth/restore-password")).authenticated()
                                 .requestMatchers(antMatcher(HttpMethod.POST,"/thbackend/v1/convocatoria")).permitAll()
                                 .requestMatchers(antMatcher(HttpMethod.GET,"/thbackend/v1/convocatoria")).permitAll()
                                 .requestMatchers(antMatcher(HttpMethod.GET,"/thbackend/v1/ciudades")).permitAll()

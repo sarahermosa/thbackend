@@ -239,6 +239,44 @@ public class AuthController {
         }
     }
 
+    @PutMapping("/restore-password")
+    public ResponseEntity<?> restorePass(@RequestBody ResetPasswordDto request){
+
+        Optional<Usuario> userOptional = userRepository.findByEmail(request.getEmail());
+
+        try {
+            if (userOptional.isEmpty()) {
+                return new ResponseEntity<>(MensajeResponse.builder()
+                        .mensaje("Usuario no existe")
+                        .object(null)
+                        .build()
+                        , HttpStatus.NOT_FOUND);
+            } else if (!encoder.matches(request.getOldPassword(), userOptional.get().getPassword())){
+                return new ResponseEntity<>(
+                        MensajeResponse.builder()
+                                .mensaje("Las contraseñas no coinciden")
+                                .object(null)
+                                .build()
+                        , HttpStatus.UNAUTHORIZED);
+            } else {
+                String response = service.resetPass(userOptional, encoder.encode(request.getPassword()));
+
+                return new ResponseEntity<>(MensajeResponse.builder()
+                        .mensaje(response)
+                        .object(userOptional.get().getEmail())
+                        .build()
+                        , HttpStatus.OK);
+            }
+        } catch (DataAccessException exDt) {
+            return new ResponseEntity<>(
+                    MensajeResponse.builder()
+                            .mensaje(exDt.getMessage())
+                            .object(null)
+                            .build()
+                    , HttpStatus.METHOD_NOT_ALLOWED);
+        }
+    }
+
     @Transactional
     @PostConstruct
     public void init()  {
