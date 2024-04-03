@@ -75,12 +75,12 @@ public class PostulanteController {
             System.out.println(dto);
 
 
-//            SimpleMailMessage email = new SimpleMailMessage();
-//            email.setTo("ferledesma352@gmail.com");
-//            email.setFrom("bootcampjava341@gmail.com");
-//            email.setSubject("Incripcion Convocatoria");
-//            email.setText("Hola!! " + dto.getNombre() + " Gracias por inscribirte a la convocatoria\n\nNO RESPONDER ESTE MENSAJE");
-//            javaMailSender.send(email);
+            SimpleMailMessage email = new SimpleMailMessage();
+            email.setTo(dto.getCorreo());
+            email.setFrom("bootcampjava341@gmail.com");
+            email.setSubject("Incripcion Convocatoria");
+            email.setText("Hola!! " + dto.getNombre() + " Gracias por inscribirte a la convocatoria\n\nNO RESPONDER ESTE MENSAJE");
+            javaMailSender.send(email);
 
 
             postulanteService.savePostulante(dto);
@@ -160,6 +160,14 @@ public class PostulanteController {
                                                    @RequestParam("estudios") String estudios,
                                                    @RequestParam("tecnologias_id") String tecnologiasId,
                                                    @RequestParam("referencias_personales") String referencias) {
+//        try {
+//            Postulante updatedPostulante = postulanteService.updatePostulante(id,postulante);
+//            return ResponseEntity.status(HttpStatus.OK).body("Postulante actualizado correctamente");
+//        } catch (Error ex) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+//        } catch (Exception ex) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al actualizar el postulante: " + ex.getMessage());
+//        }
 
         System.out.println("update in process");
         System.out.println(tecnologiasId);
