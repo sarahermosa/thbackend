@@ -26,8 +26,8 @@ public class ScheduledTask {
 
     @Autowired //INYECCION DE DEPENDENCIAS PARA EL EMAIL
     private JavaMailSender javaMailSender;
-    //@Scheduled(cron = "0 0 12 1/15 * ?") //MANDA EL CORREO CADA 15 DIAS
-    @Scheduled(fixedRate = 40000) // 10 seg
+    @Scheduled(cron = "0 0 12 1/15 * ?") //MANDA EL CORREO CADA 15 DIAS
+//    @Scheduled(fixedRate = 40000) // 10 seg
     public void imprimirHolaMundo() throws MessagingException, IOException {
         List<String> nombresBeneficios = beneficioService.obtenerNombresBeneficios();
 
