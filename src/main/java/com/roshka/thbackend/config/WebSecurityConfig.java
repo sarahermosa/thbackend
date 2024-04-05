@@ -70,6 +70,9 @@ public class WebSecurityConfig {
                                 .requestMatchers(antMatcher(HttpMethod.GET,"/thbackend/v1/ciudades")).permitAll()
                                 .requestMatchers(antMatcher(HttpMethod.GET,"/thbackend/v1/tecnologia")).permitAll()
                                 .requestMatchers("/v3/api-docs/**","/swagger-resources/**","/swagger-ui/**").permitAll()
+                                .requestMatchers("/images/*").permitAll()
+                                .requestMatchers("/cv/*").permitAll()
+
                                 .anyRequest().authenticated()
                 );
 
