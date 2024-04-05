@@ -85,8 +85,6 @@ public class ConvocatoriaController {
     public  ResponseEntity<?> listConvocatoriaPostulantes(@PathVariable Long id) throws Exception {
 
         try{
-
-
         ConvocatoriaListaPostulanteDto output = new ConvocatoriaListaPostulanteDto();
         Convocatoria convocatoria = convocatoriaService.findById(id);
         List<Postulante> filteredPostulantes = new ArrayList<>();

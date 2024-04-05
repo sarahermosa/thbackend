@@ -1,6 +1,7 @@
 package com.roshka.thbackend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.roshka.thbackend.model.dao.PostulanteDao;
 import com.roshka.thbackend.model.dto.*;
 import com.roshka.thbackend.model.entity.*;
 import com.roshka.thbackend.service.IConvocatoriaService;
@@ -55,7 +56,7 @@ public class PostulanteController {
 
         ObjectMapper mapper = new ObjectMapper();
         try{
-            System.out.println(files);
+
             PostulanteDto dto = mapper.readValue(postulante, PostulanteDto.class);
             List<Experiencia> experienciasList = mapper.readValue(experiencias, mapper.getTypeFactory().constructCollectionType(List.class, Experiencia.class));
             List<MultipartFile> incomingFiles = Arrays.asList(files);
@@ -213,10 +214,30 @@ public class PostulanteController {
 
     }
 
+
+
+
+    @GetMapping("postulante_tecnologia/{id}")
+    public ResponseEntity<?> listConvocatoriaTecnologia(@PathVariable Long id) {
+        try {
+            List<Postulante> output = new ArrayList<>();
+            List<Postulante> listaDePostulante =postulanteService.listAll();
+
+            listaDePostulante.stream()
+                    .filter(postulante -> postulante.getTecnologiasasignadas().stream()
+                            .anyMatch(tecnologia-> tecnologia.getId_tecnologia() == id))
+                    .forEach(output :: add);
+
+
+
+            return ResponseEntity.ok().body(output);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
+        }
     }
 
 
-
-
+}
 
 
