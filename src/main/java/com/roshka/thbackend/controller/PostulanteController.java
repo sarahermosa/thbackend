@@ -45,7 +45,7 @@ public class PostulanteController {
 
     @PostMapping("postulante")
    public ResponseEntity<?> createPostulante(@RequestParam("postulante_info") String postulante,
-                                             @RequestParam("files") MultipartFile[] files,
+                                             @RequestParam(name = "files", required = false) MultipartFile[] files,
                                              @RequestParam("experiencias") String experiencias,
                                              @RequestParam("estudios") String estudios,
                                              @RequestParam("tecnologias_id") String tecnologiasId,
