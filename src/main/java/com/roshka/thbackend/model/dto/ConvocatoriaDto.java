@@ -24,7 +24,7 @@ public class ConvocatoriaDto {
     private String description;
     private Date fecha_inicio;
     private Date fecha_fin;
-    private String link="convocatoria/"+id_convocatoria;
+    private String link;
     private MultipartFile file;
     private  List<Long> tecnologias_ids;
 

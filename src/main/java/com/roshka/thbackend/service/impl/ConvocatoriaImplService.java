@@ -99,11 +99,17 @@ public class ConvocatoriaImplService implements IConvocatoriaService {
 
                 convocatoriaDao.save(convocatoria);
 
+
+
                 for (Long tecnologiaId : convocatoriaDto.getTecnologias_ids()) {
                     assignTecnologiaToConvocatoria(convocatoria.getId_convocatoria(), tecnologiaId);
                 }
 
-                return convocatoriaDao.save(convocatoria);
+                Convocatoria convocatoria_cambiar_link = convocatoriaDao.findById(convocatoria.getId_convocatoria()).get();
+                System.out.print(convocatoria_cambiar_link);
+                convocatoria_cambiar_link.setLink("/convocatoria/"+ convocatoria_cambiar_link.getId_convocatoria().toString());
+
+                return convocatoriaDao.save(convocatoria_cambiar_link);
 
 
             } catch (IOException e) {
@@ -117,7 +123,12 @@ public class ConvocatoriaImplService implements IConvocatoriaService {
                     .fecha_fin(convocatoriaDto.getFecha_fin())
                     .link(convocatoriaDto.getLink())
                     .build();
-            return convocatoriaDao.save(convocatoria);
+
+            Convocatoria convocatoria_cambiar_link = convocatoriaDao.findById(convocatoria.getId_convocatoria()).get();
+            System.out.print(convocatoria_cambiar_link);
+            convocatoria_cambiar_link.setLink("/convocatoria/"+ convocatoria_cambiar_link.getId_convocatoria().toString());
+
+            return convocatoriaDao.save(convocatoria_cambiar_link);
         }
 
 
