@@ -51,6 +51,7 @@ public class ConvocatoriaController {
                                     @RequestParam("convocatorias_tecnologias_ids") String convocatorias_tecnologias_ids ) throws IOException {
 
     try{
+        System.out.println(file);
         ObjectMapper mapper = new ObjectMapper();
         List<Long> tecnologiasListId = mapper.readValue(convocatorias_tecnologias_ids, mapper.getTypeFactory().constructCollectionType(List.class, Long.class));
         ConvocatoriaDto dto = mapper.readValue(convocatoriaDto, ConvocatoriaDto.class);

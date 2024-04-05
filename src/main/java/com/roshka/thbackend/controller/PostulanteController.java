@@ -55,7 +55,7 @@ public class PostulanteController {
 
         ObjectMapper mapper = new ObjectMapper();
         try{
-
+            System.out.println(files);
             PostulanteDto dto = mapper.readValue(postulante, PostulanteDto.class);
             List<Experiencia> experienciasList = mapper.readValue(experiencias, mapper.getTypeFactory().constructCollectionType(List.class, Experiencia.class));
             List<MultipartFile> incomingFiles = Arrays.asList(files);
@@ -70,9 +70,6 @@ public class PostulanteController {
             dto.setEstudios(estudiosList);
             dto.setTecnologiasList(tecnologiasListId);
             dto.setReferencia_personal(referenciaPersonalList);
-
-
-
 
             System.out.println(dto);
 

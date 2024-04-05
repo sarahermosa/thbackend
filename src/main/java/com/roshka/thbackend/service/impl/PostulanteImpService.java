@@ -54,12 +54,14 @@ public class PostulanteImpService implements IPostulanteService {
         Postulante postulante = modelMapper.map(PostulanteDto, Postulante.class);
         postulante.setTecnologiasasignadas(new HashSet<>());
         postulanteDao.save(postulante);
-
+        System.out.println(PostulanteDto.getFilesMultipart());
         for (Long tecnologiaId : PostulanteDto.getTecnologiasList()) {
             assignTecnologiaToPostulante(postulante.getId_postulante(), tecnologiaId);
         }
 
-        if(PostulanteDto.getFilesMultipart() != null) {
+        if(PostulanteDto.getFilesMultipart() != null && PostulanteDto.getFilesMultipart().isEmpty()) {
+           System.out.println("files Found");
+           System.out.println(PostulanteDto.getFilesMultipart().size());
             List<File> files = new ArrayList<>();
             for (MultipartFile file : PostulanteDto.getFilesMultipart()) {
                 InputStream fileInputStream = file.getInputStream();
