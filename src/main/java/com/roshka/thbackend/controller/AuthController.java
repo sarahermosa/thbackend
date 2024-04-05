@@ -1,5 +1,7 @@
 package com.roshka.thbackend.controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -10,12 +12,15 @@ import com.roshka.thbackend.model.dao.AllowedUsersDao;
 import com.roshka.thbackend.model.dto.*;
 import com.roshka.thbackend.service.UsuarioService;
 import jakarta.annotation.PostConstruct;
-import org.json.JSONObject;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.Valid;
+import java.nio.file.Paths;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -63,6 +68,13 @@ public class AuthController {
 
     @Autowired //INYECCION DE DEPENDENCIAS PARA EL EMAIL
     private JavaMailSender javaMailSender;
+
+    @Value("${thbackend.app.frontUrl}")
+    private String frontApp;
+
+    @Value("${spring.mail.username}")
+    private String setFrom;
+
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginDto loginRequest) {
@@ -164,18 +176,24 @@ public class AuthController {
             if (userRepository.existsByEmail(request.getEmail())) {
                 Usuario user = service.forgotPass(request.getEmail());
 
-                SimpleMailMessage email = new SimpleMailMessage();
+                MimeMessage message = javaMailSender.createMimeMessage();
+                MimeMessageHelper email = new MimeMessageHelper(message, true);
+
                 email.setTo(request.getEmail());
-                email.setFrom("bootcampjava341@gmail.com");
+                email.setFrom(setFrom);
                 email.setSubject("Recuperar Contraseña");
-                email.setText("Hola, " + user.getNombre() +
-                        "\n\n" +
-                        "¡Hubo una solicitud para cambiar su contraseña!" +
-                        "\n" +
-                        "Si no realizó esta solicitud, ignore este correo electrónico." +
-                        "\n" +
-                        "De lo contrario, haga clic en este enlace para cambiar su contraseña:\n\nhttp://localhost:5173/confirm-reset?token="+user.getToken());
-                javaMailSender.send(email);
+
+                String htmlFilePath = "src/main/resources/templates/recover-pass-template.html";
+                String logoUrl = "https://i.postimg.cc/rpYs8GHX/roshka-logo-white.png";
+
+                String htmlContent = new String(Files.readAllBytes(Paths.get(htmlFilePath)));
+                htmlContent = htmlContent.replace("{nombre}", user.getNombre());
+                htmlContent = htmlContent.replace("{logo}", logoUrl);
+                htmlContent = htmlContent.replace("{token}", frontApp+"/confirm-reset?token="+user.getToken());
+
+
+                email.setText(htmlContent, true);
+                javaMailSender.send(message);
 
 
                 return new ResponseEntity<>(MensajeResponse.builder()
@@ -198,6 +216,8 @@ public class AuthController {
                             .object(null)
                             .build()
                     , HttpStatus.METHOD_NOT_ALLOWED);
+        } catch (MessagingException | IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
