@@ -274,7 +274,7 @@ public class AuthController {
             } else if (!encoder.matches(request.getOldPassword(), userOptional.get().getPassword())){
                 return new ResponseEntity<>(
                         MensajeResponse.builder()
-                                .mensaje("Las contraseñas no coinciden")
+                                .mensaje("La contraseña actual no es correcta")
                                 .object(null)
                                 .build()
                         , HttpStatus.UNAUTHORIZED);
