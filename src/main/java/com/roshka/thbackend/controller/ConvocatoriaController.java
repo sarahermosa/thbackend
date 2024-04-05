@@ -47,7 +47,7 @@ public class ConvocatoriaController {
 
     @PostMapping(value = "convocatoria")
     public ResponseEntity<?> create(@RequestParam("convocatoria_info") String convocatoriaDto,
-                                    @RequestParam("file") MultipartFile file,
+                                    @RequestParam(name = "file", required = false) MultipartFile file,
                                     @RequestParam("convocatorias_tecnologias_ids") String convocatorias_tecnologias_ids ) throws IOException {
 
     try{
