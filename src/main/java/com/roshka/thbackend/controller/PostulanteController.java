@@ -47,7 +47,7 @@ public class PostulanteController {
     @PostMapping("postulante")
    public ResponseEntity<?> createPostulante(@RequestParam("postulante_info") String postulante,
                                              @RequestParam(name = "files", required = false) MultipartFile[] files,
-                                             @RequestParam("experiencias") String experiencias,
+                                             @RequestParam("experiencias" ) String experiencias,
                                              @RequestParam("estudios") String estudios,
                                              @RequestParam("tecnologias_id") String tecnologiasId,
                                              @RequestParam("referencias_personales") String referencias,
@@ -130,18 +130,9 @@ public class PostulanteController {
         }
     }
 
-    //
 
-//
-//    @GetMapping("/documento/{numeroDocumento}")
-//    public ResponseEntity<Postulante> buscarPorNumeroDocumento(@PathVariable String numeroDocumento) {
-//        Postulante postulante = postulanteService.buscarPorNumeroDocumento(numeroDocumento);
-//        if (postulante != null) {
-//            return ResponseEntity.ok(postulante);
-//        } else {
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
+
+
     @GetMapping("postulante")
     public ResponseEntity<?> listarPostulantes() {
         List<Postulante> postulantes = postulanteService.listAll();
@@ -157,10 +148,6 @@ public class PostulanteController {
     @ResponseStatus(HttpStatus.OK)
     public Postulante findById(@PathVariable Long id){
         Postulante postulante = postulanteService.findByID(id);
-
-
-        System.out.println(postulante.getCiudad().id_ciudad);
-        System.out.println(postulante.getCorreo());
 
         return postulante;
     }
@@ -233,6 +220,16 @@ public class PostulanteController {
             return ResponseEntity.ok().body(output);
         } catch (Exception e) {
             System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
+        }
+    }
+
+    @DeleteMapping("postulante/{id}")
+    public ResponseEntity<?> deletePostulante(@PathVariable Long id) {
+        try {
+            postulanteService.deletePostulante(id);
+            return ResponseEntity.ok().body("Postulante eliminado correctamente");
+        }catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
         }
     }

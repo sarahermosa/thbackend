@@ -30,7 +30,7 @@ public class Postulante implements Serializable {
     @NotBlank
     private String apellido;
 
-    @Column(name = "nro_documento",unique = true)
+//    @Column(name = "nro_documento",unique = true)
     private String nro_documento;
 
     private String tipo_documento;
