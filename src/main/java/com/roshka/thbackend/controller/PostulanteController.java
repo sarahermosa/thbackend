@@ -71,7 +71,7 @@ public class PostulanteController {
                 estudiosList = mapper.readValue(estudios, mapper.getTypeFactory().constructCollectionType(List.class, Estudio.class));
             }
             List<Long> tecnologiasListId = null;
-            if(!tecnologiasId.isEmpty()){
+            if(!tecnologiasId.equals("[]")){
                 tecnologiasListId = mapper.readValue(tecnologiasId, mapper.getTypeFactory().constructCollectionType(List.class, Long.class));
             }
             List<ReferenciaPersonal> referenciaPersonalList = null;
