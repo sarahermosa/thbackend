@@ -36,10 +36,14 @@ public class Postulante implements Serializable {
     private String tipo_documento;
 
 
+
     private String comentario_rrhh;
 
 
     private String correo;
+
+
+
 
 
     private String direccion;
@@ -51,10 +55,15 @@ public class Postulante implements Serializable {
     private String estado_civil;
 
 
+
     private String fecha_nacimiento;
 
 
     private String fecha_actualizacion;
+
+
+
+
 
 
     private String fecha_creacion;

@@ -55,8 +55,10 @@ public class PostulanteImpService implements IPostulanteService {
         postulante.setTecnologiasasignadas(new HashSet<>());
         postulanteDao.save(postulante);
         System.out.println(PostulanteDto.getFilesMultipart());
-        for (Long tecnologiaId : PostulanteDto.getTecnologiasList()) {
-            assignTecnologiaToPostulante(postulante.getId_postulante(), tecnologiaId);
+        if(PostulanteDto.getTecnologiasList() != null) {
+            for (Long tecnologiaId : PostulanteDto.getTecnologiasList()) {
+                assignTecnologiaToPostulante(postulante.getId_postulante(), tecnologiaId);
+            }
         }
 
         if(PostulanteDto.getFilesMultipart() != null && PostulanteDto.getFilesMultipart().isEmpty()) {
