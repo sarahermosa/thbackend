@@ -58,18 +58,41 @@ public class PostulanteController {
         try{
 
             PostulanteDto dto = mapper.readValue(postulante, PostulanteDto.class);
-            List<Experiencia> experienciasList = mapper.readValue(experiencias, mapper.getTypeFactory().constructCollectionType(List.class, Experiencia.class));
-            List<MultipartFile> incomingFiles = Arrays.asList(files);
-            List<Estudio> estudiosList = mapper.readValue(estudios, mapper.getTypeFactory().constructCollectionType(List.class, Estudio.class));
-            List<Long> tecnologiasListId = mapper.readValue(tecnologiasId, mapper.getTypeFactory().constructCollectionType(List.class, Long.class));
-            List<ReferenciaPersonal> referenciaPersonalList = mapper.readValue(referencias, mapper.getTypeFactory().constructCollectionType(List.class, ReferenciaPersonal.class));
+            List<Experiencia> experienciasList = null;
+            if(!experiencias.isEmpty()) {
+                experienciasList = mapper.readValue(experiencias, mapper.getTypeFactory().constructCollectionType(List.class, Experiencia.class));
+            }
+            List<MultipartFile> incomingFiles = null;
+            if(files != null) {
+                incomingFiles = Arrays.asList(files);
+            }
+            List<Estudio> estudiosList = null;
+            if(!estudios.isEmpty()) {
+                estudiosList = mapper.readValue(estudios, mapper.getTypeFactory().constructCollectionType(List.class, Estudio.class));
+            }
+            List<Long> tecnologiasListId = null;
+            if(!tecnologiasId.isEmpty()){
+                tecnologiasListId = mapper.readValue(tecnologiasId, mapper.getTypeFactory().constructCollectionType(List.class, Long.class));
+            }
+            List<ReferenciaPersonal> referenciaPersonalList = null;
+            if(!referencias.isEmpty()){
+                referenciaPersonalList = mapper.readValue(referencias, mapper.getTypeFactory().constructCollectionType(List.class, ReferenciaPersonal.class));
+            }
             Convocatoria convocatoria = convocatoriaService.findById(Long.parseLong(convocatoriaId));
 
             dto.setConvocatoria(convocatoria);
-            dto.setFilesMultipart(incomingFiles);
-            dto.setExperiencias(experienciasList);
-            dto.setEstudios(estudiosList);
-            dto.setTecnologiasList(tecnologiasListId);
+            if(incomingFiles != null){
+                dto.setFilesMultipart(incomingFiles);
+            }
+            if(experienciasList != null){
+                dto.setExperiencias(experienciasList);
+            }
+            if(estudiosList != null){
+                dto.setEstudios(estudiosList);
+            }
+            if(tecnologiasListId != null){
+                dto.setTecnologiasList(tecnologiasListId);
+            }
             dto.setReferencia_personal(referenciaPersonalList);
 
             System.out.println(dto);
