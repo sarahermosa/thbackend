@@ -62,7 +62,6 @@ public class Postulante implements Serializable {
 
     private String fecha_contratado;
 
-    @NotBlank
     private String nivel_ingles;
 
     private String nombre_ciudad;
