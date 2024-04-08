@@ -24,10 +24,10 @@ public class Postulante implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private Long id_postulante;
-    @NotBlank
+
     private String nombre;
 
-    @NotBlank
+
     private String apellido;
 
     @Column(name = "nro_documento")
@@ -35,16 +35,15 @@ public class Postulante implements Serializable {
 
     private String tipo_documento;
 
-    @NotBlank
+
     private String comentario_rrhh;
 
-    @NotBlank
+
     private String correo;
 
-    @NotBlank
+
     private String direccion;
 
-    @NotBlank
     private String nro_telefono;
 
     private String nacionalidad;
