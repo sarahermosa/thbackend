@@ -11,6 +11,7 @@ import com.roshka.thbackend.service.EstadoService;
 import jakarta.annotation.PostConstruct;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +35,19 @@ public class EstadoController {
     public ResponseEntity<?> listarEstados(){
         List<Estado> estados = estadoService.listAll();
         return ResponseEntity.ok().body(estados);
+    }
+
+    @PostMapping("estado")
+    public ResponseEntity<?> agregarEstado(@RequestBody EstadoDto estadoDto) {
+        try {
+            System.out.println(estadoDto.toString());
+            Estado estado = modelMapper.map(estadoDto, Estado.class);
+            estado = estadoService.guardar_estado(estado);
+            return ResponseEntity.status(HttpStatus.CREATED).body(estado);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostConstruct
