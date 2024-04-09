@@ -31,13 +31,9 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
         if ("Bad credentials".equals(errorMessage)) {
             errorResponse.put("error", "Unauthorized");
             errorResponse.put("message", "Username or credentials invalid");
-
         } else if ("Full authentication is required to access this resource".equals(errorMessage)) {
             errorResponse.put("error", "Unauthorized");
             errorResponse.put("message", "Full authentication is required to access this resource");
-        } else if (authException.getCause() instanceof ExpiredJwtException) {
-            errorResponse.put("error", "Unauthorized");
-            errorResponse.put("message", "JWT token is expired");
         } else {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Error: Unauthorized");
         }
