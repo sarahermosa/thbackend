@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,18 +32,18 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
             errorResponse.put("error", "Unauthorized");
             errorResponse.put("message", "Username or credentials invalid");
 
-            response.setContentType("application/json");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write(new ObjectMapper().writeValueAsString(errorResponse));
         } else if ("Full authentication is required to access this resource".equals(errorMessage)) {
             errorResponse.put("error", "Unauthorized");
             errorResponse.put("message", "Full authentication is required to access this resource");
-
-            response.setContentType("application/json");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write(new ObjectMapper().writeValueAsString(errorResponse));
+        } else if (authException.getCause() instanceof ExpiredJwtException) {
+            errorResponse.put("error", "Unauthorized");
+            errorResponse.put("message", "JWT token is expired");
         } else {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Error: Unauthorized");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Error: Unauthorized");
         }
+
+        response.setContentType("application/json");
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.getWriter().write(new ObjectMapper().writeValueAsString(errorResponse));
     }
 }

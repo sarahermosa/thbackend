@@ -4,6 +4,7 @@ import com.roshka.thbackend.service.IBeneficio;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -26,6 +27,10 @@ public class ScheduledTask {
 
     @Autowired //INYECCION DE DEPENDENCIAS PARA EL EMAIL
     private JavaMailSender javaMailSender;
+
+    @Value("${thbackend.app.beneficiosMail}")
+    private String setTo;
+
     @Scheduled(cron = "0 0 12 1/15 * ?") //MANDA EL CORREO CADA 15 DIAS
 //    @Scheduled(fixedRate = 40000) // 10 seg
     public void imprimirHolaMundo() throws MessagingException, IOException {
@@ -49,7 +54,7 @@ public class ScheduledTask {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper email = new MimeMessageHelper(message, true);
 
-        email.setTo("adalmontania@gmail.com");
+        email.setTo(setTo);
         email.setFrom("bootcampjava341@gmail.com");
         email.setSubject("Beneficios");
 
