@@ -139,15 +139,17 @@ public class PostulanteController {
     @GetMapping("/postulantes")
     public List<Postulante> buscarPorNombre(@RequestParam(name = "nombre", required = false) String nombre,
                                             @RequestParam(name = "apellido", required = false) String apellido,
-                                            @RequestParam(name = "estado", required = false) String estado) {
+                                            @RequestParam(name = "estado", required = false) String estado,
+                                            @RequestParam(name = "nro_documento", required = false) String nro_documento){
         if (nombre != null) {
             return postulanteService.buscarPorNombre(nombre);
         } else if (apellido != null) {
             return postulanteService.buscarPorApellido(apellido);
         } else if (estado != null){
             return postulanteService.buscarPorEstado(Long.parseLong(estado));
-        }
-        else {
+        } else if (nro_documento !=null) {
+            return postulanteService.buscarPorDocumento(nro_documento);
+        } else {
             // Handle case when neither nombre nor apellido is provided
             throw new IllegalArgumentException("Debe proporcionar nombre, apellido o estado para la búsqueda.");
         }
@@ -278,8 +280,6 @@ public class PostulanteController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
         }
     }
-
-
 }
 
 

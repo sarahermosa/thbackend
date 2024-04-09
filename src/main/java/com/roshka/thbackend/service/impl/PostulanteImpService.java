@@ -220,12 +220,8 @@ public class PostulanteImpService implements IPostulanteService {
         }
         return resultado;
     }
-//
-//    @Override
-//    public Postulante buscarPorNumeroDocumento(String numeroDocumento) {
-//        return postulanteDao.findByNumeroDocumento(numeroDocumento);
-//    }
-//
+
+
     @Override
     public List<Postulante> buscarPorApellido(String apellido) {
         List<Postulante> postulantes =  (List) postulanteDao.findAll();
@@ -248,6 +244,18 @@ public class PostulanteImpService implements IPostulanteService {
         }
         return resultado;
     }
-//
+
+    @Override
+    public List<Postulante> buscarPorDocumento(String nroDocumento) {
+        List<Postulante> postulantes =  (List) postulanteDao.findAll();
+        List<Postulante> resultado = new ArrayList<>();
+        for (Postulante postulante : postulantes) {
+            if (postulante.getNombre().contains(nroDocumento)) {
+                resultado.add(postulante);
+            }
+        }
+        return resultado;
+    }
+
 
 }
