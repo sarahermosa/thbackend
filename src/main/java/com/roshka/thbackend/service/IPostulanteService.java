@@ -28,4 +28,6 @@ public interface IPostulanteService {
     List<Postulante> buscarPorEstado(Long idEstado);
 
     List<Postulante> buscarPorDocumento(String nroDocumento);
+
+    List<Postulante> filtro(String nombre, String apellido, Long idEstado, String nroDocumento,  Long idTecnologia);
 }

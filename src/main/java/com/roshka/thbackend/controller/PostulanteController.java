@@ -140,19 +140,28 @@ public class PostulanteController {
     public List<Postulante> buscarPorNombre(@RequestParam(name = "nombre", required = false) String nombre,
                                             @RequestParam(name = "apellido", required = false) String apellido,
                                             @RequestParam(name = "estado", required = false) String estado,
-                                            @RequestParam(name = "nro_documento", required = false) String nro_documento){
-        if (nombre != null) {
-            return postulanteService.buscarPorNombre(nombre);
-        } else if (apellido != null) {
-            return postulanteService.buscarPorApellido(apellido);
-        } else if (estado != null){
-            return postulanteService.buscarPorEstado(Long.parseLong(estado));
-        } else if (nro_documento !=null) {
-            return postulanteService.buscarPorDocumento(nro_documento);
-        } else {
-            // Handle case when neither nombre nor apellido is provided
-            throw new IllegalArgumentException("Debe proporcionar nombre, apellido o estado para la búsqueda.");
+                                            @RequestParam(name = "nro_documento", required = false) String nro_documento,
+                                            @RequestParam(name = "id_tecnologia", required = false) String id_tecnologia){
+
+        if (nombre != null && nombre.isEmpty()) {
+            nombre = null;
         }
+        if (apellido != null && apellido.isEmpty()) {
+            apellido = null;
+        }
+        if (estado != null && estado.isEmpty()) {
+            estado = null;
+        }
+        if (nro_documento != null && nro_documento.isEmpty()) {
+            nro_documento = null;
+        }
+        if (id_tecnologia != null && id_tecnologia.isEmpty()) {
+            id_tecnologia = null;
+        }
+
+        // Pass null values to the filtro method
+        List<Postulante> postulantes = postulanteService.filtro(nombre, apellido, estado != null ? Long.parseLong(estado) : null, nro_documento, id_tecnologia != null ? Long.parseLong(id_tecnologia) : null);
+        return postulantes;
     }
 
 

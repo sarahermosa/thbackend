@@ -45,7 +45,7 @@ public class PostulanteImpService implements IPostulanteService {
 
     @Override
     public List<Postulante> listAll() {
-        return  (List) postulanteDao.findAll();
+        return (List) postulanteDao.findAll();
     }
 
     @Override
@@ -59,15 +59,15 @@ public class PostulanteImpService implements IPostulanteService {
         System.out.println(PostulanteDto.getFilesMultipart());
 
 
-        if(PostulanteDto.getTecnologiasList() != null) {
+        if (PostulanteDto.getTecnologiasList() != null) {
             for (Long tecnologiaId : PostulanteDto.getTecnologiasList()) {
                 assignTecnologiaToPostulante(postulante.getId_postulante(), tecnologiaId);
             }
         }
 
-        if(PostulanteDto.getFilesMultipart() != null) {
-           System.out.println("files Found");
-           System.out.println(PostulanteDto.getFilesMultipart().size());
+        if (PostulanteDto.getFilesMultipart() != null) {
+            System.out.println("files Found");
+            System.out.println(PostulanteDto.getFilesMultipart().size());
             List<File> files = new ArrayList<>();
             for (MultipartFile file : PostulanteDto.getFilesMultipart()) {
                 InputStream fileInputStream = file.getInputStream();
@@ -89,13 +89,12 @@ public class PostulanteImpService implements IPostulanteService {
                 files.add(f);
             }
             postulante.setFiles(files);
-        }else{
+        } else {
             postulante.setFiles(new ArrayList<>());
         }
 
         assignCityToPostulante(postulante.getId_postulante(), PostulanteDto.getId_ciudad());
         assignEstadoToPostulante(postulante.getId_postulante(), PostulanteDto.getId_estado());
-
 
 
         postulanteDao.save(postulante);
@@ -126,13 +125,13 @@ public class PostulanteImpService implements IPostulanteService {
             postulante.setTecnologiasasignadas(new HashSet<>());
             postulanteDao.save(postulante);
 
-            if(postulanteDto.getTecnologiasList() != null) {
+            if (postulanteDto.getTecnologiasList() != null) {
                 for (Long tecnologiaId : postulanteDto.getTecnologiasList()) {
                     assignTecnologiaToPostulante(postulante.getId_postulante(), tecnologiaId);
                 }
             }
 
-            if(postulanteDto.getFilesMultipart() != null) {
+            if (postulanteDto.getFilesMultipart() != null) {
                 List<File> files = new ArrayList<>();
                 files = postulante.getFiles();
 
@@ -159,14 +158,12 @@ public class PostulanteImpService implements IPostulanteService {
                     }
                     postulante.setFiles(files);
                 }
-            }
-            else {
+            } else {
                 postulante.setFiles(postulante.getFiles());
             }
 
             assignCityToPostulante(postulante.getId_postulante(), postulanteDto.getId_ciudad());
             assignEstadoToPostulante(postulante.getId_postulante(), postulanteDto.getId_estado());
-
 
 
             postulanteDao.save(postulante);
@@ -211,7 +208,7 @@ public class PostulanteImpService implements IPostulanteService {
 
     @Override
     public List<Postulante> buscarPorNombre(String nombre) {
-        List<Postulante> postulantes =  (List) postulanteDao.findAll();
+        List<Postulante> postulantes = (List) postulanteDao.findAll();
         List<Postulante> resultado = new ArrayList<>();
         for (Postulante postulante : postulantes) {
             if (postulante.getNombre().contains(nombre)) {
@@ -224,7 +221,7 @@ public class PostulanteImpService implements IPostulanteService {
 
     @Override
     public List<Postulante> buscarPorApellido(String apellido) {
-        List<Postulante> postulantes =  (List) postulanteDao.findAll();
+        List<Postulante> postulantes = (List) postulanteDao.findAll();
         List<Postulante> resultado = new ArrayList<>();
         for (Postulante postulante : postulantes) {
             if (postulante.getApellido().contains(apellido)) {
@@ -233,9 +230,10 @@ public class PostulanteImpService implements IPostulanteService {
         }
         return resultado;
     }
-//
+
+    //
     public List<Postulante> buscarPorEstado(Long idEstado) {
-        List<Postulante> postulantes =  (List) postulanteDao.findAll();
+        List<Postulante> postulantes = (List) postulanteDao.findAll();
         List<Postulante> resultado = new ArrayList<>();
         for (Postulante postulante : postulantes) {
             if (Objects.equals(postulante.getEstado().id_estado, idEstado)) {
@@ -247,7 +245,7 @@ public class PostulanteImpService implements IPostulanteService {
 
     @Override
     public List<Postulante> buscarPorDocumento(String nroDocumento) {
-        List<Postulante> postulantes =  (List) postulanteDao.findAll();
+        List<Postulante> postulantes = (List) postulanteDao.findAll();
         List<Postulante> resultado = new ArrayList<>();
         for (Postulante postulante : postulantes) {
             if (postulante.getNombre().contains(nroDocumento)) {
@@ -257,5 +255,51 @@ public class PostulanteImpService implements IPostulanteService {
         return resultado;
     }
 
+    @Override
+    public List<Postulante> filtro(String nombre, String apellido, Long idEstado, String nroDocumento, Long idTecnologia) {
+        List<Postulante> postulantes = (List<Postulante>) postulanteDao.findAll();
+        List<Postulante> resultado = new ArrayList<>();
 
+        for (Postulante postulante : postulantes) {
+            boolean match = true;
+
+            // Check if the nombre parameter is not null and if the postulante's nombre matches
+            if (nombre != null && !nombre.isEmpty() && !postulante.getNombre().toLowerCase().contains(nombre.toLowerCase())) {
+                match = false;
+            }
+
+            // Check if the apellido parameter is not null and if the postulante's apellido matches
+            if (apellido != null && !apellido.isEmpty() && !postulante.getApellido().toLowerCase().contains(apellido.toLowerCase())) {
+                match = false;
+            }
+
+            // Check if the idEstado parameter is not null and if the postulante's idEstado matches
+            if (idEstado != null && postulante.getEstado().id_estado != idEstado) {
+                match = false;
+            }
+
+            // Check if the nroDocumento parameter is not null and if the postulante's nroDocumento matches
+            if (nroDocumento != null && !nroDocumento.isEmpty() && !postulante.getNro_documento().equalsIgnoreCase(nroDocumento)) {
+                match = false;
+            }
+
+            // Check if the idTecnologia parameter is not null and if the postulante's tecnologias contain the specified idTecnologia
+            if (idTecnologia != null && postulante.getTecnologiasasignadas().stream().noneMatch(tecnologia -> tecnologia.getId_tecnologia().equals(idTecnologia))) {
+                match = false;
+            }
+
+
+            // If any parameter is null, consider the match as true
+            if (nombre == null && apellido == null && idEstado == null && nroDocumento == null && idTecnologia == null) {
+                match = true;
+            }
+
+            // If all conditions are satisfied, add the postulante to the resultado list
+            if (match) {
+                resultado.add(postulante);
+            }
+        }
+
+        return resultado;
+    }
 }
