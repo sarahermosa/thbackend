@@ -57,6 +57,8 @@ public class PostulanteImpService implements IPostulanteService {
         postulante.setTecnologiasasignadas(new HashSet<>());
         postulanteDao.save(postulante);
         System.out.println(PostulanteDto.getFilesMultipart());
+
+
         if(PostulanteDto.getTecnologiasList() != null) {
             for (Long tecnologiaId : PostulanteDto.getTecnologiasList()) {
                 assignTecnologiaToPostulante(postulante.getId_postulante(), tecnologiaId);
@@ -124,35 +126,42 @@ public class PostulanteImpService implements IPostulanteService {
             postulante.setTecnologiasasignadas(new HashSet<>());
             postulanteDao.save(postulante);
 
-            for (Long tecnologiaId : postulanteDto.getTecnologiasList()) {
-                assignTecnologiaToPostulante(postulante.getId_postulante(), tecnologiaId);
+            if(postulanteDto.getTecnologiasList() != null) {
+                for (Long tecnologiaId : postulanteDto.getTecnologiasList()) {
+                    assignTecnologiaToPostulante(postulante.getId_postulante(), tecnologiaId);
+                }
             }
 
             if(postulanteDto.getFilesMultipart() != null) {
                 List<File> files = new ArrayList<>();
-                for (MultipartFile file : postulanteDto.getFilesMultipart()) {
-                    InputStream fileInputStream = file.getInputStream();
-                    String fileExtension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf('.'));
-                    Path directoriImagenes = Paths.get("cv/" + DigestUtils.md5DigestAsHex(fileInputStream) + fileExtension);
-                    String rutaAbsoluta = directoriImagenes.toFile().getAbsolutePath();
-                    try {
-                        byte[] bytesImg = file.getBytes();
-                        Path rutaCompleta = Paths.get(rutaAbsoluta);
-                        Files.write(rutaCompleta, bytesImg);
-                    } catch (IOException e) {
-                        System.out.println("Error al subir el archivo");
+                files = postulante.getFiles();
+
+
+                if (postulanteDto.getFilesMultipart() != null) {
+                    for (MultipartFile file : postulanteDto.getFilesMultipart()) {
+                        InputStream fileInputStream = file.getInputStream();
+                        String fileExtension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf('.'));
+                        Path directoriImagenes = Paths.get("cv/" + DigestUtils.md5DigestAsHex(fileInputStream) + fileExtension);
+                        String rutaAbsoluta = directoriImagenes.toFile().getAbsolutePath();
+                        try {
+                            byte[] bytesImg = file.getBytes();
+                            Path rutaCompleta = Paths.get(rutaAbsoluta);
+                            Files.write(rutaCompleta, bytesImg);
+                        } catch (IOException e) {
+                            System.out.println("Error al subir el archivo");
+                        }
+                        File f = new File();
+                        String baseUrl = request.getRequestURL().toString().replace(request.getRequestURI(), "");
+                        String fileUrl = baseUrl + "/" + directoriImagenes.toString().replace("\\", "/");
+                        f.setLinkToFile(fileUrl);
+                        f.setFile_type(fileExtension);
+                        files.add(f);
                     }
-                    File f = new File();
-                    String baseUrl = request.getRequestURL().toString().replace(request.getRequestURI(), "");
-                    String fileUrl = baseUrl + "/" + directoriImagenes.toString().replace("\\", "/");
-                    f.setLinkToFile(fileUrl);
-                    f.setFile_type(fileExtension);
-                    files.add(f);
+                    postulante.setFiles(files);
                 }
-                postulante.setFiles(files);
             }
             else {
-                postulante.setFiles(new ArrayList<>());
+                postulante.setFiles(postulante.getFiles());
             }
 
             assignCityToPostulante(postulante.getId_postulante(), postulanteDto.getId_ciudad());

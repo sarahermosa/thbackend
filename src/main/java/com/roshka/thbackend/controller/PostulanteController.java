@@ -178,38 +178,60 @@ public class PostulanteController {
     @PutMapping("/postulante/{id}")
     public ResponseEntity<String> updatePostulante(@PathVariable Long id,
                                                    @RequestParam("postulante_info") String postulante,
-                                                   @RequestParam("files") MultipartFile[] files,
+                                                   @RequestParam(value = "files", required = false) MultipartFile[] files,
                                                    @RequestParam("experiencias") String experiencias,
                                                    @RequestParam("estudios") String estudios,
                                                    @RequestParam("tecnologias_id") String tecnologiasId,
-                                                   @RequestParam("referencias_personales") String referencias) {
-//        try {
-//            Postulante updatedPostulante = postulanteService.updatePostulante(id,postulante);
-//            return ResponseEntity.status(HttpStatus.OK).body("Postulante actualizado correctamente");
-//        } catch (Error ex) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-//        } catch (Exception ex) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al actualizar el postulante: " + ex.getMessage());
-//        }
+                                                   @RequestParam("referencias_personales") String referencias,
+                                                   @RequestParam("convocatoria_id") String convocatoriaId){
+//
+
 
         System.out.println("update in process");
-        System.out.println(tecnologiasId);
         ObjectMapper mapper = new ObjectMapper();
         try{
 
             PostulanteDto dto = mapper.readValue(postulante, PostulanteDto.class);
-            List<Experiencia> experienciasList = mapper.readValue(experiencias, mapper.getTypeFactory().constructCollectionType(List.class, Experiencia.class));
-            List<MultipartFile> incomingFiles = Arrays.asList(files);
-            List<Estudio> estudiosList = mapper.readValue(estudios, mapper.getTypeFactory().constructCollectionType(List.class, Estudio.class));
-            List<Long> tecnologiasListId = mapper.readValue(tecnologiasId, mapper.getTypeFactory().constructCollectionType(List.class, Long.class));
-            List<ReferenciaPersonal> referenciaPersonalList = mapper.readValue(referencias, mapper.getTypeFactory().constructCollectionType(List.class, ReferenciaPersonal.class));
+            List<Experiencia> experienciasList = null;
+            if(!experiencias.isEmpty()) {
+                experienciasList = mapper.readValue(experiencias, mapper.getTypeFactory().constructCollectionType(List.class, Experiencia.class));
+            }
+            List<MultipartFile> incomingFiles = null;
+            if(files != null) {
+                incomingFiles = Arrays.asList(files);
+            }
+            List<Estudio> estudiosList = null;
+            if(!estudios.isEmpty()) {
+                estudiosList = mapper.readValue(estudios, mapper.getTypeFactory().constructCollectionType(List.class, Estudio.class));
+            }
+            List<Long> tecnologiasListId = null;
+            if(!tecnologiasId.equals("[]")){
+                tecnologiasListId = mapper.readValue(tecnologiasId, mapper.getTypeFactory().constructCollectionType(List.class, Long.class));
+            }
+            List<ReferenciaPersonal> referenciaPersonalList = null;
+            if(!referencias.isEmpty()){
+                referenciaPersonalList = mapper.readValue(referencias, mapper.getTypeFactory().constructCollectionType(List.class, ReferenciaPersonal.class));
+            }
 
+            Convocatoria convocatoria = convocatoriaService.findById(Long.parseLong(convocatoriaId));
 
-            dto.setFilesMultipart(incomingFiles);
-            dto.setExperiencias(experienciasList);
-            dto.setEstudios(estudiosList);
-            dto.setTecnologiasList(tecnologiasListId);
+            dto.setConvocatoria(convocatoria);
+            if(incomingFiles != null){
+                dto.setFilesMultipart(incomingFiles);
+            }
+            if(experienciasList != null){
+                dto.setExperiencias(experienciasList);
+            }
+            if(estudiosList != null){
+                dto.setEstudios(estudiosList);
+            }
+            if(tecnologiasListId != null){
+                dto.setTecnologiasList(tecnologiasListId);
+            }
             dto.setReferencia_personal(referenciaPersonalList);
+
+            System.out.println(dto);
+
 
 
             postulanteService.updatePostulante( id,dto);
