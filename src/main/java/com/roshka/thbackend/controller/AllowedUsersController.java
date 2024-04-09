@@ -1,9 +1,12 @@
 package com.roshka.thbackend.controller;
 
+import com.roshka.thbackend.model.dao.UsuarioDao;
 import com.roshka.thbackend.model.dto.AllowedUsersDto;
 import com.roshka.thbackend.model.entity.AllowedUsers;
+import com.roshka.thbackend.model.entity.Usuario;
 import com.roshka.thbackend.model.payload.MensajeResponse;
 import com.roshka.thbackend.service.AllowedUsersService;
+import com.roshka.thbackend.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -12,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin
@@ -20,6 +24,9 @@ public class AllowedUsersController {
 
     @Autowired
     private AllowedUsersService allowedUsersService;
+
+    @Autowired
+    private UsuarioService usuarioService;
 
     //Listar usuarios permitidos
     @PreAuthorize("hasRole('ADMIN')")
@@ -109,7 +116,15 @@ public class AllowedUsersController {
     public ResponseEntity<?> delete(@PathVariable Integer id) {
         try {
             AllowedUsers usuarioDelete = allowedUsersService.findById(id);
+
+            Usuario user = usuarioService.findByEmail(usuarioDelete.getEmail());
+
+            //eliminamos el usuario de la tabla de registros de login
+            if(user != null){
+                usuarioService.delete(user);
+            }
             allowedUsersService.delete(usuarioDelete);
+
             return new ResponseEntity<>(usuarioDelete, HttpStatus.NO_CONTENT);
         } catch (DataAccessException exDt) {
             return new ResponseEntity<>(
