@@ -11,6 +11,8 @@ import java.util.Optional;
 public interface UsuarioService {
     List<Usuario> listAll();
 
+    Usuario findByEmail(String email);
+
     Usuario save(UsuarioDto usuario);
 
     Usuario findById(Integer id);

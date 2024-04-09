@@ -47,6 +47,12 @@ public class UsuarioImplService implements UsuarioService {
         return usuarioDao.findById(id).orElse(null);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public Usuario findByEmail(String email) {
+        return usuarioDao.findByEmail(email).orElse(null);
+    }
+
     @Transactional
     @Override
     public void delete(Usuario usuario) {
