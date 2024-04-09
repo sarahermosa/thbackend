@@ -51,6 +51,8 @@ public class PostulanteImpService implements IPostulanteService {
     @Override
     @Transactional
     public Postulante savePostulante(PostulanteDto PostulanteDto) throws IOException {
+        System.out.print("here");
+        System.out.println(PostulanteDto.getFilesMultipart());
         Postulante postulante = modelMapper.map(PostulanteDto, Postulante.class);
         postulante.setTecnologiasasignadas(new HashSet<>());
         postulanteDao.save(postulante);
@@ -61,7 +63,7 @@ public class PostulanteImpService implements IPostulanteService {
             }
         }
 
-        if(PostulanteDto.getFilesMultipart() != null && PostulanteDto.getFilesMultipart().isEmpty()) {
+        if(PostulanteDto.getFilesMultipart() != null || PostulanteDto.getFilesMultipart().isEmpty()) {
            System.out.println("files Found");
            System.out.println(PostulanteDto.getFilesMultipart().size());
             List<File> files = new ArrayList<>();
