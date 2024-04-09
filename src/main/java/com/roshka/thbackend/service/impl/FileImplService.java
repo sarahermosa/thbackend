@@ -1,8 +1,10 @@
 package com.roshka.thbackend.service.impl;
 
 import com.roshka.thbackend.model.dao.FileDao;
+import com.roshka.thbackend.model.dao.PostulanteDao;
 import com.roshka.thbackend.model.dto.FileDto;
 import com.roshka.thbackend.model.entity.File;
+import com.roshka.thbackend.model.entity.Postulante;
 import com.roshka.thbackend.service.IFileService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,9 @@ public class FileImplService implements IFileService {
 
     @Autowired
     private FileDao fileDao;
+
+    @Autowired
+    private PostulanteDao postulanteDao;
 
 
     @Override
@@ -41,8 +46,17 @@ public class FileImplService implements IFileService {
 
     @Override
     public void delete(File file) {
-        fileDao.delete(file);
+        List<Postulante> postulantes = postulanteDao.findByFilesContaining(file);
+        for (Postulante postulante : postulantes) {
+            postulante.getFiles().remove(file);
+            postulanteDao.save(postulante); // Update the Postulante entity
+        }
+        fileDao.delete(file); // Delete the file
     }
+
+
+
+
 
     @Override
     public boolean existsById(Long id) {

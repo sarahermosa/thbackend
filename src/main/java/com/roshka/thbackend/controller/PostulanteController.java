@@ -41,6 +41,9 @@ public class PostulanteController {
     @Autowired
     private IConvocatoriaService convocatoriaService;
 
+    @Autowired
+    private IFileService FileService;
+
     @Autowired //INYECCION DE DEPENDENCIAS PARA EL EMAIL
     private JavaMailSender javaMailSender;
 
@@ -279,6 +282,19 @@ public class PostulanteController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
         }
     }
+
+
+    @DeleteMapping("/eliminarfile/{id}")
+    public ResponseEntity<?> deleteFile(@PathVariable Long id) {
+        try {
+            File file = FileService.findById(id);
+            FileService.delete(file);
+            return ResponseEntity.ok().body("Archivo eliminado correctamente");
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
+        }
+    }
+
 
     @DeleteMapping("postulante/{id}")
     public ResponseEntity<?> deletePostulante(@PathVariable Long id) {
