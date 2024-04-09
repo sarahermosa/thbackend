@@ -63,7 +63,7 @@ public class PostulanteImpService implements IPostulanteService {
             }
         }
 
-        if(PostulanteDto.getFilesMultipart() != null || PostulanteDto.getFilesMultipart().isEmpty()) {
+        if(PostulanteDto.getFilesMultipart() != null) {
            System.out.println("files Found");
            System.out.println(PostulanteDto.getFilesMultipart().size());
             List<File> files = new ArrayList<>();
