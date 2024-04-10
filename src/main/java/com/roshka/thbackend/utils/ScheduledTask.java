@@ -1,5 +1,6 @@
 package com.roshka.thbackend.utils;
 
+import com.roshka.thbackend.model.entity.Beneficio;
 import com.roshka.thbackend.service.IBeneficio;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -31,16 +32,21 @@ public class ScheduledTask {
     @Value("${thbackend.app.beneficiosMail}")
     private String setTo;
 
+    @Value("${spring.mail.username}")
+    private String setFrom;
+
     @Scheduled(cron = "0 0 12 1/15 * ?") //MANDA EL CORREO CADA 15 DIAS
 //    @Scheduled(fixedRate = 40000) // 10 seg
     public void imprimirHolaMundo() throws MessagingException, IOException {
         List<String> nombresBeneficios = beneficioService.obtenerNombresBeneficios();
+        List<Beneficio> beneficios = beneficioService.listAll();
+
 
         String ListHTML = "";
         int count = 1;
-        for (String beneficio : nombresBeneficios)
+        for (Beneficio beneficio : beneficios)
         {
-            String ptag = "<p style=\"font-size: 1rem; color:black;\">" + count + ". " + beneficio + "</p>";
+            String ptag = "<p style=\"font-size: 1rem; color:black;\">" + count + ". " + beneficio.getTitulo() + ": " + beneficio.getDescripcion() + "</p>";
             ListHTML += ptag;
             count++;
         }
@@ -55,7 +61,7 @@ public class ScheduledTask {
         MimeMessageHelper email = new MimeMessageHelper(message, true);
 
         email.setTo(setTo);
-        email.setFrom("bootcampjava341@gmail.com");
+        email.setFrom(setFrom);
         email.setSubject("Beneficios");
 
         String htmlFilePath = "src/main/resources/templates/schedule-task-template.html";
@@ -67,6 +73,11 @@ public class ScheduledTask {
         htmlContent = htmlContent.replace("{logo}", logoUrl);
 
         email.setText(htmlContent, true);
-        javaMailSender.send(message);
+
+        if(beneficios.size() > 0) {
+            javaMailSender.send(message);
+        } else {
+            System.out.println("No hay beneficios");
+        }
     }
 }
